@@ -39,6 +39,9 @@ promise.then(undefined, onRejected)
 
 等同于promise.catch(onRejected) //.catch(onRejected)是个更好的选择
 
+<strong>Static Method</strong>
+Promise.resove()或是Promise.all()等静态方法。
+
 ##### 1.2. `Promise`的状态
 
 用<code>new Promise</code>实例化的promise对象有三种状态：
