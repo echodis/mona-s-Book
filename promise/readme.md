@@ -8,7 +8,8 @@ promise的功能是将复杂的异步处理轻松地进行模式化。
 
 根据[ES6 Promises](/)标准中定义的API，目前大致有三种类型:
 
-<strong>Constructor</strong>
+<strong>Constructor</strong><br>
+
 从构造函数<code>Promise</code>来创建一个新<code>Promise</code>对象作为接口。使用<code>new</code>来调用构造器进行实例化。
 
 ~~~js
@@ -18,7 +19,8 @@ var promise = new Promise(function(resolve, reject) {
 });
 ~~~
 
-<strong>Instance Method</strong>
+<strong>Instance Method</strong><br>
+
 设置promise对象在resolve/reject时调用的回调函数，使用<code>promsise.then()</code>实例方法。
 
 ~~~js
@@ -39,7 +41,8 @@ promise.then(undefined, onRejected)
 
 等同于promise.catch(onRejected) //.catch(onRejected)是个更好的选择
 
-<strong>Static Method</strong>
+<strong>Static Method</strong><br>
+
 Promise.resove()或是Promise.all()等静态方法。
 
 ##### 1.2. `Promise`的状态
