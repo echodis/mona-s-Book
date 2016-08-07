@@ -49,13 +49,13 @@ Promise.resove()或是Promise.all()等静态方法。
 
 用<code>new Promise</code>实例化的promise对象有三种状态：
 
-<strong>Fulfilled</strong>
+<strong>Fulfilled</strong><br>
 	resolve(成功)时，此时会调用<code>onFulfilled</code>
 
-<strong>Rejected</strong>
+<strong>Rejected</strong><br>
 	reject(失败)时，此时会调用<code>onRejected</code>
 
-<strong>Pending</strong>
+<strong>Pending</strong><br>ßß
 	既不是resolve又不是reject状态。也就是promise对象刚被创建后的初始化状态等。
 
 #### 2. 实战Promise
@@ -87,13 +87,13 @@ promise.then(function taskA() {
 
 Promise和数组
 
-Promise.all()接收一个promise对象的数组作为参数，当这个数组里所有的promise对象全部变成resolve或reject时，它才会去调用then方法。
+Promise.all()<br>接收一个promise对象的数组作为参数，当这个数组里所有的promise对象全部变成resolve或reject时，它才会去调用then方法。
 
 ~~~js
 Promise.all([request.comment(), request.people()])
 ~~~
 
-Promise.reace()
+Promise.reace()<br>
 接收一个promise对象的数组作为参数，只要数组里有一个对象进入Fulfilled状态时，它就开始后续处理。(其他promise会执行，但对后续的处理不会重复)
 
 ##### 3.关于错误处理
