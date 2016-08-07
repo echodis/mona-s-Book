@@ -87,13 +87,13 @@ promise.then(function taskA() {
 
 Promise和数组
 
-Promise.all()<br>接收一个promise对象的数组作为参数，当这个数组里所有的promise对象全部变成resolve或reject时，它才会去调用then方法。
+静态实例方法:Promise.all()<br>接收一个promise对象的数组作为参数，当这个数组里所有的promise对象全部变成resolve或reject时，它才会去调用then方法。
 
 ~~~js
 Promise.all([request.comment(), request.people()])
 ~~~
 
-Promise.reace()<br>
+静态实例方法:Promise.reace()<br>
 接收一个promise对象的数组作为参数，只要数组里有一个对象进入Fulfilled状态时，它就开始后续处理。(其他promise会执行，但对后续的处理不会重复)
 
 ##### 3.关于错误处理
@@ -105,7 +105,7 @@ Promise.resolve(42).then(throwError).catch(onRejected) //onRejected可以捕获t
 ~~~
 
 
-[Promise book](http://liubin.org/promises-book/) C01, C02
+内容来自：[Promise book](http://liubin.org/promises-book/) Chapter01, Chapter02
 
 
 
