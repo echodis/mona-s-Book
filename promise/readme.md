@@ -93,8 +93,8 @@ Promise和数组
 Promise.all([request.comment(), request.people()])
 ~~~
 
-静态实例方法:Promise.rece()<br>
-接收一个promise对象的数组作为参数，只要数组里有一个对象进入Fulfilled状态时，它就开始后续处理。(其他promise会执行，但对后续的处理不会重复)
+静态实例方法:Promise.race()<br>
+接收一个promise对象的数组作为参数，只要数组里有一个对象进入Fulfilled状态时，它就开始后续处理。(其他promise会继续执行，但对后续的处理不会重复)
 
 ##### 3.关于错误处理
 ~~~js
