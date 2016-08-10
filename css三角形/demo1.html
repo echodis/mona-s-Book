@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>css三角形</title>
+	<style type="text/css">
+		body {
+			padding: 20px;
+		}
+		.div1 {
+			width: 200px;
+			height: 200px;
+			border-top: 40px solid black;
+			border-right: 40px solid red;
+			border-bottom: 40px solid yellow;
+			border-left: 40px solid blue;
+		}
+
+		.div2 {
+			width: 0;
+			height: 0;
+			border-top: 40px solid black;
+			border-right: 40px solid red;
+			border-bottom: 40px solid yellow;
+			border-left: 40px solid blue;
+		}
+
+		.div3 {
+			width: 0;
+			height: 0;
+			border-top: 60px solid red;
+			border-right: 25px solid red;
+			border-bottom: 40px solid transparent;
+			border-left: 25px solid red;
+		}
+		/*figure 2.2*/
+		.wrapper {
+			position: relative;
+			display: inline-block;
+		}
+		.div4{
+			width: 0;
+			height: 0;
+			border-top: 40px solid transparent;
+			border-right: 40px solid transparent;
+			border-bottom: 40px solid transparent;
+			border-left: 40px solid blue;
+		}
+		/*第一个和第二个相对位置设置有多种解决方案*/
+		.l2 {
+			position: absolute;
+			left: 30%;
+			top: 0;
+		}
+
+		.div5 {
+			width: 0;
+			height: 0;
+			border-top: 40px solid transparent;
+			border-right: 40px solid transparent;
+			border-bottom: 40px solid transparent;
+			border-left: 40px solid blue;
+		}
+		.div5:after {
+			content: "";
+			position: absolute;
+			left: 50%;
+			top: 25%;
+			zoom: 0.5;
+			width: 0;
+			height: 0;
+			border-top: 40px solid transparent;
+			border-right: 40px solid transparent;
+			border-bottom: 40px solid transparent;
+			border-left: 40px solid blue;
+		}
+
+		.div6 {
+			width: 200px;
+			height: 40px;
+			top: 0;
+			border: none;
+			background-color: blue;
+			/*文字……不必要啊*/
+			color: white;
+			text-align: center;
+			line-height: 40px;
+		}
+		.div6:before {
+			content: "";
+			position: absolute;
+			left: -20px; /*这里-20的原因是伪元素的border-left设置了transparent,这时候只要右侧一个三角，border-left设为none也可以,此时left为-10px*/
+			top: 25%;
+			width: 0;
+			height: 0;
+			border-right: 10px solid blue;
+			/*这里border要分别设置*/
+			border-top: 10px solid transparent;
+			border-bottom: 10px solid transparent;
+			border-left: 10px solid transparent;
+			/*border-left: none;*/
+		}
+
+		.div7-2 {
+			position: relative;
+   			width: 10rem;
+			height: 2rem;
+			padding: 0.7rem 0;
+			font-size: 1.6rem !important;
+			color: #fff;
+			text-align: center;
+			background: #ff0066;
+		}
+		.div7-2:before, .div7-2:after {
+			content: "";
+		      position: absolute;
+		      display: block;
+		      bottom: -0.6rem;
+		      border: 1.5rem solid #ff0066;
+		      z-index: -1;
+		}
+
+		.div7-2:before {
+		    	left: -2.4rem;
+		    	border-right-width: 1.5rem;
+		    	border-left-color: transparent;
+		    	box-shadow: 1px 1px 0 rgba(176, 102, 166, 0.8);
+		}
+ 
+		.div7-2:after {
+		   	right: -2.4rem;
+		  	border-left-width: 1.5rem;
+		      border-right-color: transparent;
+		      box-shadow: 0 1px 0 rgba(176, 102, 166, 0.8);
+		}
+
+		.div7-2 .div-content:before,
+		.div7-2 .div-content:after {
+		    content: "";
+		    position: absolute;
+		    display: block;
+		    border-style: solid;
+		    border-color: #bf004c transparent transparent transparent;
+		    bottom: -0.6rem;
+		}
+		 
+		.div7-2 .div-content:before {
+		    left: 0;
+		    border-width: 0.6rem 0 0 0.6rem;
+		}
+		 
+		.div7-2 .div-content:after {
+		    right: 0;
+		    border-width: 0.6rem 0.6rem 0 0;
+		}
+	</style>
+</head>
+<body>
+	<p>小图有多种实现方式，1是iconfont，2是切图，3有css。iconfont适用于比较规则的图形，比如正方形。切图有多种解决方案，比如雪碧图也是较为常见的选择，雪碧图也有很多适用技巧……下次总结。
+	现在根据css画三角的特性，在想能不能用css画其他规则的多边形。</p>
+
+	<h3>1.基本三角形</h3>
+	<p>通过border宽度和border颜色的设置可以实现三角效果: 因为浏览器在解决边框问题的时候选择让重合区域（比如left和top重合部分）平分区域的方案，因此此时会出现三角形的效果。</p>
+	<div class="div1"></div>
+	<p>· figure 1.0</p>
+	<p>为了实现简单三角形，在figure1.0的基础上修改内容的height和width为0。</p>
+	<div class="div2"></div>
+	<p>· figure 1.2</p>
+
+	<h3>2.常见的三角形有关的图案</h3>
+	<h3>2.1旗帜</h3>
+	<p>根据基本三角形转换而来，上下和左右设置不同的border宽度，同时，bottom设为透明色，就ok啦。角度选好应该挺好看的……</p>
+	<div class="div3"></div>
+	<p>· figure 2.1</p>
+	<h3>2.2层叠三角形</h3>
+	<p>两个三角同时出现的话，用两个div分别设置成三角形然后设置位置这种方案可以，比如</p>
+	<div class="wrapper">
+		<div class="div4 l1"></div>
+		<div class="div4 l2"></div>
+	</div>
+	<p>· figure 2.2.1</p>
+	<p>还有方案用伪元素来实现，毕竟这只是一个图片，一个div能实现就最好啦。还可以设置伪元素缩放比例，比如下图</p>
+	<div class="wrapper">
+		<div class="div5"></div>
+	</div>
+	<p>· figure 2.2.1</p>
+	<p>逆时针旋转90°就是圣诞树了耶~</p>
+
+	<h3>2.3小气泡</h3>
+	<p>有时候小三角的出现只是为了卖萌，比如</p>
+	<div class="wrapper">
+		<div class="div6">为了卖萌！！</div>
+	</div>
+	<p>· figure 2.3.1</p>
+
+	<h3>2.4丝带</h3>
+	<p>丝带其实是我熬到现在的根本原因……写出来真的好高大上啊，最起码细节处理不错</p>
+	<div class="wrapper-2">
+		<div class="div7-2">
+			<div class="div-content">金卡会员</div>
+		</div>
+	</div>
+	<p>· figure 2.4.1</p>
+
+</body>
+</html>
