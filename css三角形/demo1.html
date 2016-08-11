@@ -112,25 +112,25 @@
 		}
 		.div7-2:before, .div7-2:after {
 			content: "";
-		      position: absolute;
-		      display: block;
-		      bottom: -0.6rem;
-		      border: 1.5rem solid #ff0066;
-		      z-index: -1;
+		    position: absolute;
+		    display: block;
+		    bottom: -0.6rem;
+		    border: 1.5rem solid #ff0066;
+		    z-index: -1;
 		}
 
 		.div7-2:before {
-		    	left: -2.4rem;
-		    	border-right-width: 1.5rem;
-		    	border-left-color: transparent;
-		    	box-shadow: 1px 1px 0 rgba(176, 102, 166, 0.8);
+		    left: -2.4rem;
+	    	border-right-width: 1.5rem;
+	    	border-left-color: transparent;
+	    	box-shadow: 1px 1px 0 rgba(176, 102, 166, 0.8);
 		}
  
 		.div7-2:after {
 		   	right: -2.4rem;
 		  	border-left-width: 1.5rem;
-		      border-right-color: transparent;
-		      box-shadow: 0 1px 0 rgba(176, 102, 166, 0.8);
+		    border-right-color: transparent;
+		    box-shadow: 0 1px 0 rgba(176, 102, 166, 0.8);
 		}
 
 		.div7-2 .div-content:before,
@@ -139,12 +139,14 @@
 		    position: absolute;
 		    display: block;
 		    border-style: solid;
+		    /*上右下左*/
 		    border-color: #bf004c transparent transparent transparent;
 		    bottom: -0.6rem;
 		}
 		 
 		.div7-2 .div-content:before {
 		    left: 0;
+		    /*这里通过宽度设置其实构造了两个三角形，只有top和left有宽度，利用上面说的重合区域平分的特性。简洁有效*/
 		    border-width: 0.6rem 0 0 0.6rem;
 		}
 		 
