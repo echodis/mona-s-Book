@@ -4,7 +4,7 @@
 	<title>css三角形</title>
 	<style type="text/css">
 		body {
-			padding: 20px;
+			padding: 30px;
 		}
 		.div1 {
 			width: 200px;
@@ -109,6 +109,7 @@
 			color: #fff;
 			text-align: center;
 			background: #ff0066;
+			margin-left: 2rem;
 		}
 		.div7-2:before, .div7-2:after {
 			content: "";
@@ -153,6 +154,42 @@
 		.div7-2 .div-content:after {
 		    right: 0;
 		    border-width: 0.6rem 0.6rem 0 0;
+		}
+
+		.wrapper-3 {
+			position: relative;
+		}
+
+		.div8 {
+			/*这里的宽度要用数学好好算一下，六边形中间矩形的长和宽*/
+			width: 40px;
+			height: 70px; /*根号3*/
+			background-color: blue;
+			margin-left: 40px;
+			text-align:center;
+			/*多行内容的话，可以通过设置white-space和text-overflow表示*/
+			line-height: 70px;
+			color: white;
+		}
+		.div8:before, .div8:after {
+			content: "";
+			position: absolute;
+			border: 20px solid red;
+			border-width: 35px 20px 35px 20px;
+			width: 0;
+			height: 0;
+		}
+
+		.div8:before {
+			border-color: transparent blue transparent transparent;
+			left: 0;
+			top: 0;
+		}
+
+		.div8:after {
+			border-color: transparent transparent transparent blue;
+			left: 80px;
+			top:0;
 		}
 	</style>
 </head>
@@ -202,6 +239,15 @@
 		</div>
 	</div>
 	<p>· figure 2.4.1</p>
+
+	<h3>3.正多边形</h3>
+	<p>那么能不能画多边形呢，其实想画一个正六边形。答案肯定是可以的~</p>
+	<div class="wrapper-3">
+		<div class="div8">
+		文字!
+		</div>
+	</div>
+	<p>· figure 2.5</p>
 
 </body>
 </html>
