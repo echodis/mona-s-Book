@@ -1,0 +1,201 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>task_1_3_1</title>
+        
+        <style>
+            body {
+                padding: 20px 60px;
+            }
+            div {
+                box-sizing: border-box;
+            }
+            
+            .box-wrapper {
+                padding: 20px;
+                background-color: #eee;
+                border: 1px solid #999;
+            }
+            .left-box {
+                width: 200px;
+                border: 1px solid #999;
+            }
+            .mid-box {
+                border: 1px solid #999;
+                box-sizing: border-box;
+            }
+            .right-box {
+                width: 200px;
+                border: 1px solid #999;
+                
+            }
+
+            /* 方案1 */
+            #box-wrapper1 {
+                overflow: hidden;
+            }
+            #left-box1 {
+                float: left;
+            }
+            #right-box1 {
+                float: right;
+            }
+            #mid-box1 {
+                margin-left: 220px;
+                margin-right: 220px;
+            }
+
+            /* 方案2 */
+            #box-wrapper2 {
+                display: flex;
+                flex-direction: row;
+            }
+            #left-box2 {
+                
+                display: inline-block;
+                width: 200px;
+                flex: 0 0 200px;
+            }
+            #mid-box2 {
+                flex-grow: 1;
+                display: inline-block;
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+            #right-box2 {
+                
+                display: inline-block;
+                width: 200px;
+                flex: 0 0 200px;
+            }
+
+            /* 方案3 */
+            #box-wrapper3 {
+                position: relative;
+            }
+
+            #left-box3 {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+            }
+
+            #mid-box3 {
+                position: absolute;
+                top: 20px;
+                margin-left: 220px;
+                margin-right: 240px;
+            }
+
+            #right-box3 {
+                top: 20px;
+                right: 20px;
+                position: absolute;
+            }
+
+            
+        </style>
+        <script>
+            function presize() {
+                var leftH = document.getElementById("left-box3").clientHeight;
+                var midH = document.getElementById("mid-box3").clientHeight;
+                var rightH = document.getElementById("right-box3").clientHeight;
+                var maxHeight = Math.max.apply(Math, [leftH, midH, rightH]);
+                
+                document.getElementById("box-wrapper3").style.height = (maxHeight + 40) + 'px';
+            }
+
+        </script>
+    </head>
+    <body>
+        <p>自适应三栏布局是很常用的布局场景，解决方案也有很多。今天总结了3个常用的方案，以下一一列举。(本文内容嵌入了jsfiddle，加载较慢时，可以直接查看页面代码)</p>
+        <h4>1.第一种是利用float浮动，左侧和右侧内容分别浮动定位，中间内容最后利用左右margin来实现块与块之间的间隔。</h4>
+        <div class="box-wrapper" id="box-wrapper1">
+            <!--左侧边框-->
+            <div class="left-box" id="left-box1">
+                <img src="" />
+                <div>团队名称</div>
+            </div>
+            
+            <!--右侧边框-->
+            <div class="right-box" id="right-box1">
+                <div>个人logo</div>
+                <div>个人logo</div>
+                <div>个人logo</div>
+                <div>个人logo</div>
+            </div>
+            <!--中间边框-->
+            <div class="mid-box" id="mid-box1">
+                这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍
+            </div>
+        </div>
+        <p>这个办法优点是代码简洁。值得注意的是父元素.box-wrapper的<code>overflow</code>设置为<code>hidden</code>，这样父元素的高度将始终与子元素中最高的元素一致。<br />缩放浏览器即可查看效果。</p>
+        <iframe
+            style="width: 60%; height: 400px; margin-top: 20px;"
+            src="http://jsfiddle.net/monaz_/b1c4d3kL/4/embedded/html,css,result">
+        </iframe>
+        <h4>2.第二种是利用flex实现，投入使用时，需要考虑兼容性。访问<a href="http://caniuse.com/#search=flex">can i use</a>查看flex兼容性。</h4>
+        <div class="box-wrapper" id="box-wrapper2">
+            <!--左侧边框-->
+            <div class="left-box" id="left-box2">
+                <img src="" />
+                <div>团队名称</div>
+            </div>
+            <!--中间边框-->
+            <div class="mid-box" id="mid-box2">
+                这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍
+            </div>
+            <!--右侧边框-->
+            <div class="right-box" id="right-box2">
+                <div>个人logo</div>
+                <div>个人logo</div>
+                <div>个人logo</div>
+                <div>个人logo</div>
+            </div>
+        </div>
+        <p>与浮动处理的不同之处在于，当宽度过小时，网页排列依照文档流的顺序进行，不会出现类似元素浮动处理时出现的元素叠加现象。</p>
+        <iframe
+            style="width: 60%; height: 400px; margin-top: 20px;"
+            src="http://jsfiddle.net/monaz_/rjgx003m/embedded/html,css,result">
+        </iframe>
+        <h4>3.第三种是利用position属性实现。position在处理元素定位时很常见，也是可以尝试的方法之一。</h4>
+        <div class="box-wrapper" id="box-wrapper3" >
+            <!--左侧边框-->
+            <div class="left-box" id="left-box3">
+                <img src="" />
+                <div>团队名称</div>
+            </div>
+            <!--中间边框-->
+            <div class="mid-box" id="mid-box3">
+                这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍这里是团队的介绍
+            </div>
+            <!--右侧边框-->
+            <div class="right-box" id="right-box3">
+                <div>个人logo</div>
+                <div>个人logo</div>
+                <div>个人logo</div>
+                <div>个人logo</div>
+            </div>
+        </div>
+        <br /><br />
+        <iframe
+            style="width: 60%; height: 400px; margin-top: 20px;"
+            src="http://jsfiddle.net/monaz_/1euys278/1/embedded/html,css,result">
+        </iframe>
+        <p>&#9785 这里的问题是，3子元素均绝对定位脱离的文档流，因此无法撑开父元素。如果有要求父元素与子元素等高的需求时，需要用js计算对应的高度。</p>
+        <p>js处理的大体思路是计算出最大高度并更新父元素的高度，具体如下：</p>
+        <p>给body添加onload事件处理函数presize()，缺点是页面会在正常加载基础上刷新一次。</p>
+        
+        <pre>
+    function presize() {
+        var leftH = document.getElementById("left-box3").clientHeight;
+        var midH = document.getElementById("mid-box3").clientHeight;
+        var rightH = document.getElementById("right-box3").clientHeight;
+        var maxHeight = Math.max.apply(Math, [leftH, midH, rightH]);
+        document.getElementById("box-wrapper3").style.height = (maxHeight + 40) + 'px';
+    } 
+        </pre>
+        <p>以上就是我总结的3个三栏自定义布局的方案。具体方案的选择还有依使用环境而定~&#9996</p>
+    </body>
+</html>
