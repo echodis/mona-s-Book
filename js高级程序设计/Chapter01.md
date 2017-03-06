@@ -1,4 +1,4 @@
-## 第一章
+## 第一章：JavaScript简介
 
 ### JavaScript（JS） 不等于 ECMAScript(ES)
 
@@ -49,10 +49,10 @@ DOM有3级，由W3C负责制定，分别是DOM1级，DOM2级和DOM3级。
 
 * 1级主要规定如何映射文档结构;
 * 2级在1级的基础上扩充了鼠标和用户页面事件、范围、遍历（迭代DOM文档的方法），也通过对象接口增加了对CSS的支持。2级引入如下子模块：
-    * DOM 视图(DOM Views) -- 定义跟踪不同文档（如应用CSS之前和之后的文档）视图的接口；
-    * DOM事件（DOM Events） -- 定义事件和事件处理接口；
-    * DOM样式（DOM Style）-- 定义基于CSS为元素应用样式的接口。 
-    * DOM遍历和范围（DOM Traversal and Range）-- 定义遍历和操作文档树的接口。
+    * DOM 视图(DOM Views) - 定义跟踪不同文档（如应用CSS之前和之后的文档）视图的接口；
+    * DOM事件（DOM Events） - 定义事件和事件处理接口；
+    * DOM样式（DOM Style）- 定义基于CSS为元素应用样式的接口。 
+    * DOM遍历和范围（DOM Traversal and Range）- 定义遍历和操作文档树的接口。
 * 3级进一步扩展DOM，引入以统一方式加载和保存文档的方法，新增验证文档的方法。 
 
 ### BOM(浏览器对象模型 Browser Object Model)
