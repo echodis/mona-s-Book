@@ -1,6 +1,6 @@
 ## 第一章
 
-### 1.1 JavaScript（JS） 不等于 ECMAScript(ES)
+### JavaScript（JS） 不等于 ECMAScript(ES)
 
 JS和ES通常被用来表达相同的含义，但JS的含义要比ES广泛得多。
 
