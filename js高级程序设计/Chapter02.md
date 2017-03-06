@@ -1,6 +1,6 @@
 ## 第二章：在HTML中使用JavaScript
 
-### 2.1 <script>元素
+### 2.1 &lt;script&gt;元素
 
 向HTML页面中插入js代码的主要方法是使用&lt;script&gt;元素。HTML 4.0.1为&lt;script&gt;定义了5个属性。
 
