@@ -42,8 +42,9 @@ HTML或XML页面中每个组成部分都是某种类型的节点，这些节点�
 ````
 
 以上HTML页面DOM的分层节点图如下：
-![image](./images/1-1.jpg)
-<img src="./images/1-1.jpg" width=256 height=256 />
+
+<img src="./images/1-1.jpg" width=300 />
+
 DOM有3级，由W3C负责制定，分别是DOM1级，DOM2级和DOM3级。
 
 * 1级主要规定如何映射文档结构;
