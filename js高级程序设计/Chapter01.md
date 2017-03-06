@@ -1,14 +1,14 @@
-# 第一章
+## 第一章
 
-## 1.1 JavaScript（JS） 不等于 ECMAScript(ES)
+### 1.1 JavaScript（JS） 不等于 ECMAScript(ES)
 
 JS和ES通常被用来表达相同的含义，但JS的含义要比ES广泛得多。
 
-`JS = ES + DOM + BOM`
+> JS = ES + DOM + BOM
 
-其中ES是核心，文档对象模型和浏览器对象模型都是JS独特又不可或缺的部分。
+其中ECMAScript是核心，文档对象模型(DOM)和浏览器对象模型(BOM)都是JS独特又不可或缺的部分。
 
-## ECMAScript
+### ECMAScript
 
 ECMAScript由ECMA-262定义。是对实现这个标准各方面内容语言的描述，规定了JS的以下部分，
 
@@ -22,12 +22,11 @@ ECMAScript由ECMA-262定义。是对实现这个标准各方面内容语言的�
 
 目前正式发布版本是ECMAScript 6即ECMAScript 2015.
 
-## DOM(文档对象模型 Document OBject Model)
+### DOM(文档对象模型 Document OBject Model)
 
-````definition
-DOM是针对XML但经过扩展用于HTML的应用程序编程接口（API）。DOM把整个页面映射为一个多层节点结构。
+DOM定义如下：
+> __DOM是针对XML但经过扩展用于HTML的应用程序编程接口（API）。DOM把整个页面映射为一个多层节点结构。
 HTML或XML页面中每个组成部分都是某种类型的节点，这些节点包含着不同类型的数据。
-````
 
 以最简单的页面举例：
 
@@ -54,7 +53,7 @@ HTML或XML页面中每个组成部分都是某种类型的节点，这些节点�
     * DOM遍历和范围（DOM Traversal and Range）-- 定义遍历和操作文档树的接口。
 * 3级进一步扩展DOM，引入以统一方式加载和保存文档的方法，新增验证文档的方法。 
 
-## BOM(浏览器对象模型 Browser Object Model)
+### BOM(浏览器对象模型 Browser Object Model)
 
 习惯上将所有针对浏览器的Javascript扩展算作BOM的一部分，包括：
 
