@@ -68,7 +68,7 @@ ECMAScript中有5种简单数据类型（基本数据类型）和1种复杂数�
 * 基本数据类型：Undefined、Null 、Boolean 、Number 和String。
 * 复杂数据类型：Object，Object本质是由一组无序的名值对组成的。
 
-在具体介绍每个数据前，先介绍检测给定变量数据类型的手段 - typeof。
+在具体介绍每个数据前，先介绍检测给定变量数据类型的手段 ——typeof。
 
 #### typeof操作符
 
@@ -205,6 +205,66 @@ console.log(isNaN(true)); // true，转换为数值1（参见以下数值转换�
 1. `Number()`：适用于任何数据类型；
 2. `parseInt()`：将字符串转换为数值；
 3. `parseFloat()`：将字符串转换为数值。
+
+:one: Number()函数的转换转换规则如下：
+
+传入参数| Number()转换值
+------- | -------
+Boolean | true返回1，false返回0
+数字值 | 直接返回数字
+null | 0
+undefined | NaN
+字符串：只包含数字 | 返回十进制数字，忽略前导零
+字符串：包含有效浮点值 | 对应浮点数值
+字符串：包含有效十六进制格式 | 相同大小的十进制整数值
+空字符串 | 0
+除以上格式的字符串 | 返回NaN
+对象 | 调用对象的valueOf方法，再依次转换返回值。若转换结果是NaN，则调用对象的toString()方法，再一次转换返回值。
+
+:two: parseInt(string, [radix])：
+
+parseInt()传入两个参数，第一个是要解析为整数的值，第二个是转换时用的基数（多少进制，常用取值10，2，8，16）。可选，但推荐明确指定。
+
+ ````js
+ console.log(parseInt("070")); // 56(十六进制)，和Number()取值不同
+ console.log(parseInt("0xf")); // 15(八进制)
+ console.log(parseInt("AF", 16)) // 175, 第二个参数允许字符串不带0x
+ conosle.log(parseInt("AF")); // NaN，这种情况下转换失败
+ ````
+
+:three: parseFloat(string):
+
+parseFloat()从第一个字符开始解析每个字符，一直解析到字符串末尾或解析到遇见一个无效的浮点数字字符为止（第一个小数点有效，第二个小数点则是无效的，因此它后面的字符串将被忽略）。
+
+parseFloat()会始终忽略前导零。只解析十进制值，十六进制格式也会始终被转换为0，所以没有第二个参数。
+
+````js
+console.log("1234blue"); // 1234(整数)
+console.log("0xA"); // 0
+console.log("22.34.5"); // 22.34
+console.log("3.125e7"); // 31250000
+````
+
+#### String类型
+
+以配对的双引号或单引号表示。
+
+* String数据类型包含一些特殊的字符字面量，也叫转义序列。使用`\`进行转义。
+* 字符串一旦创建就不可改变。改变某个变量保存的字符串首先要销毁原来的，在用新的值来填充
+* 转换为字符串有两种方法：
+	* toString([radix])，几乎每个值都有这个方法（null和undefined没有，后面详细讨论），返回相应值的字符串表现。可选的基数表示进制数；
+	* String()，能够将任何类型的值转换为字符串（null和undefined），转换规则如下：
+		* 如果值有toString()方法，则调用之并返回相应结果；
+		* 如果值是null，返回"null"；
+		* 如果值是undefined，返回"undefined"
+	
+````js
+console.log(10.toString(8)); // "12"
+console.log(10.toString(16)); // "a"
+console.log(String(true)); // "true"
+````
+
+#### Object类型
 
 :dizzy:
 
