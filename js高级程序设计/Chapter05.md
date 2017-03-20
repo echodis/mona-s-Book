@@ -314,7 +314,7 @@ var sum = function() {
  
  ECMAScript还定义了一个方法：bind()。这个方法会创建一个函数的实例，其this值会被绑定传给bind()函数的值。
  
-### 基本包装类型
+### 5.6 基本包装类型
  
  为了便于操作基本类型值，ECMAScript还提供了3个特殊的引用类型：Boolean、Number和String。
  
@@ -362,17 +362,41 @@ var sum = function() {
 * fromCharCode()方法：String构造函数的一个静态方法。接收一或多个字符编码，然后将它们转换成一个字符串。`String.fromCharCode(104,101,108,108,111) // "hello"` 
 * HTML方法：使用js动态格式化HTML,不推荐使用。
 
-### 单体内置对象
+### 5.7 单体内置对象
 
-  
+内置对象的定义：由ECMAScript实现提供的、不依赖于宿主环境的对象，这些对象在ECMAScript程序执行之前就已经存在了。（开发人员不必显式地实例化内置对象，因为它们已经实例化了）。
 
+#### Global对象
 
- 
- 
- 
- 
- 
- 
- 
-:sparkles:
+所有在全局作用域中定义的属性和函数，都是Global对象的属性。
+
+* URI编码方法：`encodeURI()`和`encodeURIComponent()`方法对URI进行编码，以便发送给浏览器。URI中不接受某些特殊字符，因此通过URI编码方法，用特殊的UTF-8编码替换无效字符从而让浏览器能够接受。
+	* `encodeURI()`用于整个URI，不会对本身属于URI的特殊字符进行编码，如冒号，问号，井号。对应`decodeURI()`。
+	* `encodeURIComponent()`主要用于对URI中的某一段进行编码。对它发现的任何非标准字符进行编码。对应`decodeURIComponent()`。
+
+* `eval()`方法：只接受一个参数，即要执行的ECMAScript字符串，并将参数作为实际ECMAScript语句来解析。使用时需要尤其注意，否则可能出现代码注入问题。
+* window对象。Web浏览器将Global全局对象作为window对象的一部分加以实现。因此在全局作用域中声明的所有变量和函数，都成为了window对象的属性。
+
+#### Math对象
+
+为保存数学公式和信息提供了一个公共位置，即Math对象。Math对象提供了辅助完成这些计算的属性和方法。
+
+* Math对象的属性。常用的如Math.E（自然对数的底数，即常量e），Math.PI（π的值），Math.SQRT2（2的平方根）。
+* `min()`和`max()`方法。取最小值和最大值方法。
+````js
+// 计算数组中的最大值或者最小值
+var arr = [2,4,5,6,8,13];
+var min = Math.min.apply(Math, arr); //将ath对象作为第一个参数，从而设置this的值。
+````
+* 舍入方法。
+	* Math.ceil()：向上舍入为最接近的整数。
+	* Math.floor()：向下舍入为最接近的整数。
+	* Math.round()：按标准四舍五入进行舍入。
+* random()方法。Math.random()方法返回大于等于0小于1的一个随机数。
+````js
+// 生成一个介于2到10之间的值。因此可能值的总数是9，第一个可能值是2。
+var num = Math.floor(Math.random()*9 + 2);
+````
+* 其他方法，如：Math.abs(num)、Math.pow(num,power)、Math.sqrt(num)
+
 
