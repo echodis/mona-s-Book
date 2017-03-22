@@ -58,7 +58,7 @@ result = variable instanceof constructor;
 
 作用域的图表表示如下：
 
-![作用域](./images/scope.jpg)
+<img src="./images/scope.jpg" width=300 />
 
 
 矩形表示特定执行环境。其中内部环境可以通过作用域访问所有外部环境，但外部环境不能访问内部环境中的任何变量和函数。任何环境都可以向上走索作用域链，但都不能向下搜索从而进入另一个执行环境。
