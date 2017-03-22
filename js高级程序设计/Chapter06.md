@@ -312,13 +312,28 @@ Person.prototype = {
 
 但这种显式重设操作会导致constructor可枚举特性变为true。
 
-可以这样：
+可以这样操作来避免：
 
 ````js
 Object.defineProperty(Person.prototype, "constructor", {
 	enumerable: false,
 	value: Person
 });
+````
+
+* 原生对象的原型
+
+所有原生引用类型都在其构造函数的原型上定义了方法。
+
+通过原生对象的原型，不仅可以取得所有默认方法的引用，也可以定义新方法。
+
+````js
+String.prototype.startsWith = function(text) {
+	return this.indexOf(text) == 0;
+};
+
+var msg = "Hello world!";
+alert(msg.startsWith("Hello")); // true
 ````
 
 #### 组合使用构造模式和原型模式
