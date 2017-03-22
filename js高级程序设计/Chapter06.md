@@ -197,6 +197,130 @@ alert(person1.sayName == person2.sayName); // true
 
 默认情况，所有原型对象都会自动获得一个constructor（构造函数）属性，这个属性包含一个指向prototype属性所在函数的指针。拿前面的例子举例，Person.prototype.constructor 指向 Person。
 
+这里先给出一个实例化，添加属性和删除属性过程中各对象与原型对象的关系：
+
+<img src="./images/prototype_chain.jpg" width = 400 >
+
+当代码读取某个对象的某个属性时，都会执行搜索。搜索首先从对象实例本身开始，如果在实例中找到了具有给定名字的属性，则返回该属性的值；若没有，则继续搜索指针指向的原型对象。
+
+需要注意的是，可以通过对象实例访问保存在原型中的值，但是不能通过对象实例重写原型中的值。在实例中添加的与原型对象重名的属性只会在实例中创建该属性（屏蔽原型中的那个）。
+
+[ ] hasOwnProperty()方法可以检测一个属性是存在于实例中，还是存在于原型中。存在于实例中返回true，否则返回false。
+[ ] hasPrototypeProperty()方法也可以检测属性。存在于原型对象中返回true，否则返回false。用法略有不同
+
+如：
+
+````js
+// 对象构造代码同上。
+
+var person1 = new Person();
+alert(person1.hasOwnProperty("name")); //false
+alert(hasPrototypeProperty(person, "name")); //true
+````
+
+* 原型与in操作符
+
+in操作符有两种使用方式：单独使用和在for-in循环中使用。
+
+[ ] 单独使用时，in操作符会在通过对象能够访问给定属性时返回true，无论该属性存在于实例中还是原型中。
+
+````js
+function Person() {}
+
+person.prototype.name = "aaaa";
+
+var person1 = new Person();
+console.log("name" in person1);  // true
+````
+
+[ ] for-in循环时，返回的是所有能够通过对象访问的、可枚举的(enumerated)属性,同时包括实例中和原型对象中的对象。
+
+要**取得对象上所有可枚举的实例属性**，可以使用ECMAScript5 的Object.keys()方法。这个方法接受一个对象作为参数，返回一个包含所有可枚举属性的字符串数组。
+
+````js
+function Person(){
+}
+Person.prototype.name = "Nicholas";
+Person.prototype.age = 29;
+Person.prototype.job = "Software Engineer";
+Person.prototype.sayName = function(){
+    console.log(this.name);
+};
+
+var keys = Object.keys(Person.prototype);
+console.log(keys);       // ["name", "age", "job", "sayName"]
+var p1 = new Person();
+p1.name = "Rob";
+p1.age = 31;
+var p1keys = Object.keys(p1);
+console.log(p1keys);    //["name", "age"]
+
+````
+
+[ ] Object.getOwnPropertyNames()返回所有实例的属性，无论是否可枚举。
+
+````js
+var keys = Object.getOwnPropertyNames(Person.prototype);
+console.log(key); // ["constructor", "name", "age", "job", "sayName"]
+````
+
+总结一下上文提到的6个方法：
+
+1. obj.hasOwnProperty("property_name")：属性在实例中存在返回true，否则false
+2. hasPrototypeProperty(obj, "property_name")：属性在原型对象中存在返回true，否则false
+3. property_name in obj：属性无论在实例还是原型中，存在即返回true
+4. for-in循环：返回实例和原型中可通过对象访问的、可枚举的全部属性
+5. Object.keys(obj)：返回实例中所有可枚举的属性，返回一个字符串数组
+6. Object.getOwnPropertyNames()： 返回所有实例的属性，无论是否可枚举
+
+* 更简单的原型语法
+
+减少不必要代码输入，同时视觉上体现出原型封装的特点：
+
+首先用对象字面量的方法重写原型对象：
+
+````js
+function Person(){
+}
+
+Person.prototype = {
+	name: "Nicholas",
+	age: 29,
+	job: "Software Engineer",
+	sayName: function() {
+		console.log(this.name);
+	}
+};
+````
+
+此时，constructor不再指向Person了（指向重写时的构造函数Object）。解决方案是显式设置constructor的值：
+
+````js
+function Person(){
+}
+
+Person.prototype = {
+	**constructor: Person,**
+	name: "Nicholas",
+	age: 29,
+	job: "Software Engineer",
+	sayName: function() {
+		console.log(this.name);
+	}
+};
+````
+
+但这种显式重设操作会导致constructor可枚举特性变为true。
+
+可以这样：
+
+````js
+Object.defineProperty(Person.prototype, "constructor", {
+	enumerable: false,
+	value: Person
+});
+````
+
 #### 组合使用构造模式和原型模式
 
 #### 动态原型模式和寄生构造函数模式
