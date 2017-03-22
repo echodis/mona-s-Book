@@ -205,8 +205,8 @@ alert(person1.sayName == person2.sayName); // true
 
 需要注意的是，可以通过对象实例访问保存在原型中的值，但是不能通过对象实例重写原型中的值。在实例中添加的与原型对象重名的属性只会在实例中创建该属性（屏蔽原型中的那个）。
 
-[ ] hasOwnProperty()方法可以检测一个属性是存在于实例中，还是存在于原型中。存在于实例中返回true，否则返回false。
-[ ] hasPrototypeProperty()方法也可以检测属性。存在于原型对象中返回true，否则返回false。用法略有不同
+- [ ] hasOwnProperty()方法可以检测一个属性是存在于实例中，还是存在于原型中。存在于实例中返回true，否则返回false。
+- [ ] hasPrototypeProperty()方法也可以检测属性。存在于原型对象中返回true，否则返回false。用法略有不同
 
 如：
 
@@ -222,7 +222,7 @@ alert(hasPrototypeProperty(person, "name")); //true
 
 in操作符有两种使用方式：单独使用和在for-in循环中使用。
 
-[ ] 单独使用时，in操作符会在通过对象能够访问给定属性时返回true，无论该属性存在于实例中还是原型中。
+- [ ] 单独使用时，in操作符会在通过对象能够访问给定属性时返回true，无论该属性存在于实例中还是原型中。
 
 ````js
 function Person() {}
@@ -233,7 +233,7 @@ var person1 = new Person();
 console.log("name" in person1);  // true
 ````
 
-[ ] for-in循环时，返回的是所有能够通过对象访问的、可枚举的(enumerated)属性,同时包括实例中和原型对象中的对象。
+- [ ] for-in循环时，返回的是所有能够通过对象访问的、可枚举的(enumerated)属性,同时包括实例中和原型对象中的对象。
 
 要**取得对象上所有可枚举的实例属性**，可以使用ECMAScript5 的Object.keys()方法。这个方法接受一个对象作为参数，返回一个包含所有可枚举属性的字符串数组。
 
@@ -257,7 +257,7 @@ console.log(p1keys);    //["name", "age"]
 
 ````
 
-[ ] Object.getOwnPropertyNames()返回所有实例的属性，无论是否可枚举。
+- [ ] Object.getOwnPropertyNames()返回所有实例的属性，无论是否可枚举。
 
 ````js
 var keys = Object.getOwnPropertyNames(Person.prototype);
