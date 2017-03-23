@@ -338,7 +338,105 @@ alert(msg.startsWith("Hello")); // true
 
 #### 组合使用构造模式和原型模式
 
-#### 动态原型模式和寄生构造函数模式
+组合使用构造模式和原型模式是最常见的自定义类型的方式。构造函数模式用于定义实体属性，原型模式用于定义方法和共享的属性。
+
+这样，每个实例都有一份实例属性的副本，同时又共享着对方法的引用。
+
+这种方法最大限度地节省了内存，也支持向构造函数传递参数。
+
+下面的代码重写了前面的例子：
+
+````js
+function() Person(name, age, job) {
+	this.name = name;
+	this.age = age;
+	this.job = job;
+	this.friend = ["Shelby", "Court"];
+}
+
+Person.prototype = {
+	constructor: Person,
+	sayName: function() {
+		console.log(this.name);
+	}
+};
+
+var person1 = new Person("Nicholas", 29, "Software Engineer");
+var person2 = new Person("Greg", 27, "Doctor");
+
+person1.friends.push("Van");
+console.log(person1.friends); // "Shelby, Court, Van"
+console.log(person2.friends); // "Shelby, Court"
+console.log(person1.friends === person2.friends); // false
+console.log(person1.sayName === person2.sayName); // true
+````
+
+person1和person2分别引用了不同的数组，所以修改某一个不会对另一个造成影响。
+
+这种方法可以说是用来定义引用类型的一种默认模式。
+
+#### 动态原型模式
+
+把所有信息都封装在了构造函数中（在必要情况时，在构造函数中初始化原型），又保持了同时使用构造函数和原型的优点。
+
+看个例子：
+
+````js
+function Person(name, age, job) {
+	//属性
+	this.name = name;
+	this.age = age;
+	this.job = job;
+	
+	**//方法
+	if(typeof this.sayName != "function") {
+		Person.prototype.sayName = function() {
+			console.log(this.name);
+		};
+	}**
+}
+
+var friend = new Person("Nicholas", 29, "Software Engineer");
+friend.sayName();
+````
+
+只在sayName()方法不存在的情况下，才将它添加到原型中。
+
+#### 寄生构造函数模式
+
+这种模式的基本思想是创建一个函数，该函数的作用仅仅是封装创建对象的代码，然后再返回新创建的对象。
+
+看看例子：
+
+````js
+function Person(name, age, job) {
+	var o = new Object();
+	o.name = name;
+	o.age = age;
+	o.job = job;
+	o.sayName = function() {
+		console.log(this.name);
+	};
+	return o;
+}
+
+var friend = new Person("Nicholas", 29, "Software Engineer");
+friend.sayName();
+````
+
+#### 稳妥构造函数模式
+
+稳妥对象，指的是没有公共属性，而且其方法也不引用this的对象。
+
+### 6.3 继承
+
+许多OO语言都支持两种继承方式：接口继承和实现继承。
+
+ECMAScript无法实现接口继承，只支持实现继承。
+
+#### 原型链
+
+原型链是实现实现继承的主要方法。基本思想是利用原型让一个引用类型集成另一个引用类型的属性和方法。
 
 
 
