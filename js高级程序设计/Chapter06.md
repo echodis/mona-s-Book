@@ -480,7 +480,120 @@ instance.constructor指向SuperType，是因为SubType的原型指向了新的�
 所有应用类型默认都继承了Object，这个继承也是通过原型链实现的。因此，默认原型会包含一个内部指针，指向Object.prototype。完整的原型链如图6-1：
 
 <img src="./images/whole_prototype_chain.jpg" width = 400 >
-&nbsp;&nbsp;&nbsp;图 6-1
+图 6-1
+
+* 确定原型和实例的关系
+
+确定原型和实例的关系，有两种方法：
+
+1. instanceof操作符：instance instanceof Object
+2. isPrototypeOf()方法：Object.prototype.isPrototypeOf(instance)
+
+* 原型链的问题
+
+一是涉及到包含引用类型值的原型时，原型链会遇到问题；二是在创建子类型的实例时，不能向超类型的构造函数中传递参数。因此很少单独使用原型链。
+
+#### 借用构造函数
+
+基本思想是在子类型构造函数内部调用超类型构造函数。函数只不过是在特定环境中执行的代码，因此通过apply()和call()方法可以在新创建的对象上执行构造函数。
+
+````js
+function SuperType() {
+	this.colors = ["red", "blue", "green"];
+}
+
+function SubType() {
+	**// 继承 SubType
+	SuperType.call(this);** // 在SubType实例的环境中这里借调了超类型的构造函数
+}
+
+var instance1 = new SubType();
+instance1.colors.push("black");
+alert(instance1.colors); // "red,blue,green,black"
+
+var instance2 = new SubType();
+alert(instance2.colors); // "red,blue,green,black";
+````
+
+参数传递可以通过apply()或call()传递，非常简单。
+
+但是无法实现函数复用，在超类型中定义的方法对子类型而言也是不可见的。
+
+#### **组合继承**
+
+先看个例子：
+
+````js
+function SuperType(name) {
+	this.name = name;
+	this.colors = ["red", "blue", "green"];
+}
+
+SuperType.prototype.sayName = function() {
+	alert(this.name);
+};
+
+function SubType(name, age) {
+	// 继承属性
+	SuperType.call(this, name);
+	
+	this.age = age;
+}
+
+// 继承方法
+SubType.prototype = new SuperType();
+SubType.prototype.constructor = SubType;
+SubType.prototype.sayAge = function() {
+	alert(this.age);
+};
+
+var instance1 = new SubType("Nicholas", 29);
+instance1.colors.push("black");
+alert(instance1.colors); // "red,blue,green,black"
+instance1.sayName(); // "Nicholas"
+instance1.sayAge(); // 29
+
+var instance2 = new SubType("Greg", 27);
+alert(instance2.colors); // "red,blue,green"
+instance2.sayName(); // "Greg"
+instance2.sayAge(); // 27
+````
+
+组合继承避免了原型链和借用构造函数的缺陷，融合了二者的优点，成为了JavaScript中最常用的继承模式。
+
+#### 原型式继承
+
+相当于在已有一个对象的前提下，对其实施浅复制，进而得到一个新的对象。
+
+ECMAScript通过新增Object.create()方法规范了原型式继承。这个方法接收两个参数，一个用作新对象原型的对象和（可选的）一个为新对象定义额外属性的对象。
+
+传入一个参数的情况下：
+
+````js
+var person = {
+	name: "Nicholas",
+	friends: ["Shelby", "Court", "Van"]
+};
+
+var anotherPerson = Object.create(person);
+anotherPerson.name = "Greg";
+anotherPerson.friends.push("Rob");
+
+var yetAnotherPerson = Object.create(person);
+yetAnotherPerson.name = "Linda";
+yetAnotherPerson.friends.push("Barbie");
+
+alert(person.friends); //"Shelby,Court,Van,Rob,Barbie"
+````
+
+#### 寄生式继承
+
+创建一个仅用于封装继承过程的函数，该函数在内部以某种方式来增强对象，最后返回对象。
+
+#### 寄生组合式继承
+
+
+
 
 
 
