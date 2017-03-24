@@ -199,7 +199,7 @@ alert(person1.sayName == person2.sayName); // true
 
 这里先给出一个实例化，添加属性和删除属性过程中各对象与原型对象的关系：
 
-<img src="./images/prototype_chain.jpg" width = 400 >
+<img src="./images/prototype.jpg" width = 400 >
 
 当代码读取某个对象的某个属性时，都会执行搜索。搜索首先从对象实例本身开始，如果在实例中找到了具有给定名字的属性，则返回该属性的值；若没有，则继续搜索指针指向的原型对象。
 
@@ -347,7 +347,7 @@ alert(msg.startsWith("Hello")); // true
 下面的代码重写了前面的例子：
 
 ````js
-function() Person(name, age, job) {
+function Person(name, age, job) {
 	this.name = name;
 	this.age = age;
 	this.job = job;
@@ -437,6 +437,51 @@ ECMAScript无法实现接口继承，只支持实现继承。
 #### 原型链
 
 原型链是实现实现继承的主要方法。基本思想是利用原型让一个引用类型集成另一个引用类型的属性和方法。
+
+原型链：在构造函数，原型和实例三者关系的基础上，假设让原型对象等于另一个类型的实例，那么此类层层递进就构成了原型链。
+
+原型链基本模式的实现代码如下：
+
+````js
+function SuperType() {
+	this.property = true;
+}
+
+SuperType.prototype.getSuperValue = function() {
+	return this.property;
+};
+
+function SubType() {
+	this.subproperty = false;
+}
+
+// 继承了SuperType
+SubType.prototype = new SuperType();
+
+SubType.prototype.getSubValue = function() {
+	return this.subproperty;
+}
+
+var instance = new SubType();
+console.log(instance.getSuperValue);  // true
+console.log(instance.constructor); // function SubType(){ ... }
+````
+
+这个例子中实例以及构造函数和原型之间的关系如图：
+
+<img src="./images/prototype_chain.jpg" width = 400 >
+
+最终的结果是，instance指向SubType的原型，SubType的原型又指向SuperType的原型。SubType.property是SuperType的实例，因此prototype位于该实例中。
+
+instance.constructor指向SuperType，是因为SubType的原型指向了新的对象SuperType的原型，而这个原型对象的constructor属性指向的是SuperType。
+
+* 默认的原型
+
+所有应用类型默认都继承了Object，这个继承也是通过原型链实现的。因此，默认原型会包含一个内部指针，指向Object.prototype。完整的原型链如图6-1：
+
+<img src="./images/whole_prototype_chain.jpg" width = 400 >
+图 6-1
+
 
 
 
