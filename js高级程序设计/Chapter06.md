@@ -480,7 +480,7 @@ instance.constructor指向SuperType，是因为SubType的原型指向了新的�
 所有应用类型默认都继承了Object，这个继承也是通过原型链实现的。因此，默认原型会包含一个内部指针，指向Object.prototype。完整的原型链如图6-1：
 
 <img src="./images/whole_prototype_chain.jpg" width = 400 >
-图 6-1
+&nbsp;&nbsp;&nbsp;图 6-1
 
 
 
