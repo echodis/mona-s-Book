@@ -254,11 +254,124 @@ location.reload(); // 重新加载（从服务器重新加载）
 
 ### navigator对象
 
-navigator已经成为识别客户端浏览器的事实标准，是所有支持JavaScript的浏览器所共有的。但是，每个浏览器中的navigator对象也都有一套自己的属性。
+navigator已经成为识别客户端浏览器的事实标准，是所有支持JavaScript的浏览器所共有的，如`navigator.userAgent`、`navigator.language`等。但是，每个浏览器中的navigator对象也都有一套自己的属性。
 
-如`navigator.userAgent`、`navigator.language`等
+第9章会详细介绍常用的属性。下面先介绍一些常用的检测例程：
 
 #### 检测插件
+
+检测浏览器中是否安装了特定插件。对于非IE浏览器，可以使用plugins数组来达到这个目的，该数组中每一项都包含下列属性：
+
+- [ ] name: 插件的名字。
+- [ ] description: 插件的描述。
+- [ ] filename: 插件的文件名。
+- [ ] length: 插件所处理的MIME类型数量。
+
+像下面这样循环迭代每个插件并将插件的name和给定的名字比较：
+
+````js
+// 检测插件（在IE中无效）
+function hasPlugin(name) {
+	name = name.toLowerCase();
+	for(var i = 0; i < navigator.plugins.length; i++) {
+		if(navigator.plugins[i].name.toLowerCase().indexOf(name) > -1) {
+			return true;
+		}
+	}
+}
+
+// 检测Flash
+alert(hasPlugin("Flash"));
+
+// 检测QuickTime
+alert(hasPlugin("QuickTime"));
+````
+
+在IE中检测插件的唯一方式是使用专有的ActiveXObject类型，并尝试创建一个特定的插件的实例。
+
+````js
+function hasIEPlugin(name) {
+	try {
+		new ActiveXObject(name);
+		return true;
+	} catch (ex) {
+		return false;
+	}
+}
+````
+
+鉴于这两种检测方法差别太大，因此典型做法是针对每个插件分别创建检测函数：
+
+````js
+// 检测所有浏览器中的Flash
+function hasFlash() {
+	var result = hasFlash("Flash");
+	if(!result) {
+		result = hasIEPlugin("ShockwaveFlash.ShockwaveFlash");
+	}
+	
+	return result;
+}
+
+// 检测所有浏览器中的QuickTime
+function hasQuickTime() {
+	var result = hasPlugin("QuickTime");
+	if(!reuslt) {
+		result = hasIEPlugin("QuickTime.QuickTime");
+	}
+	return result;
+}
+````
+
+#### 注册处理程序
+
+registerContentHandler()和registerProtocolHandler()方法，可以让一个站点指明它可以处理特定类型的信息。
+
+registerContentHandler()方法接收三个参数：要处理的MIME类型、可以处理该MIME类型的页面的URL以及应用程序的名称。
+
+registerProtocolHandler()方法接收三个参数：要处理的协议（如mailto或ftp）、处理该协议的页面的URL和应用程序名称。
+
+### screen对象
+
+screen对象基本上只用来表明客户端的能力，其中包括浏览器窗口外部的显示器的信息，如像素宽度和高度等。
+
+screenLeft：当前屏幕距左边的像素距离
+screenTop：当前屏幕距上边的像素距离
+screen.width：屏幕的像素宽度
+
+### history对象
+
+history对象保存着用户上网的历史记录，从窗口被打开的那一刻算起。
+
+出于安全方面考虑，开发人员无法得知用户浏览过的URL，不过借由用户访问过的页面列表，可以在不知道实际URL的情况下实现后退和前进。
+
+使用go()方法可以在用户的历史记录中任意跳转，可以向后也可以向前。这个方法接受一个参数，负数表示向后跳转，正数表示向前跳转，传递一个字符串参数就会跳转到历史记录中包含该字符串的第一个位置——可能后退，也可能前进（具体要看哪个位置最近），如果历史记录中不包含该字符串，那么这个方法什么也不做。
+
+````js
+// 表示后退一页
+history.go(-1);
+<!--可以简写为-->
+back();
+
+// 表示前进一页
+history.go(1);
+<!--可以简写为-->
+forward();
+
+// 前进两页
+history.go(2);
+
+// 跳转到最近的wrox.com
+history.go("wrox.com");
+````
+
+history对象还有一个length属性，保存着历史记录的数量。数量包括历史记录，即所有向后和向前的记录。当用户第一次打开某个页面而言，history.length等于0。
+
+
+
+
+
+
 
 
 
