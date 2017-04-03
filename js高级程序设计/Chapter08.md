@@ -5,7 +5,7 @@
 - [ ] 理解windows对象——BOM的核心
 - [ ] 控制窗口、框架和弹出窗口
 - [ ] 利用location对象中的页面信息
-- [ ] 使用navigator对了解浏览器
+- [ ] 使用navigator对象了解浏览器
 
 ### 8.1 window对象
 
