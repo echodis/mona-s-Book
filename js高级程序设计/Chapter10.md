@@ -31,7 +31,7 @@ DOM可以将任何HTML和XML文档描绘成一个由多层节点构成的结构�
 
 层次结构如下图：
 
-<img src="./images/10_1dom.jpg" width=400 /
+<img src="./images/10_1dom.jpg" width=400 />
 
 * **文档节点**（Document）是每个文档的根节点。
 * 文档节点只有一个子节点，即<html>元素，称之为**文档元素**。每个文档只能有一个文档元素。
