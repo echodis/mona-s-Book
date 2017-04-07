@@ -145,7 +145,7 @@ function convertToArray(nodes) {
 
 appendChild()方法最常用，用于向childNodes列表末尾添加一个节点。添加后，childNodes的新增节点，父节点以及以前最后一个子节点的关系指针都会相应更新。更新完后，appendChild()返回新增的节点。
 
-> 如果传入到appendChild中的节点已经是文档的一部分，那结果就是该节点从原来的位置转移到新位置。（任何DOM节点不能同事出现在文档的多个位置上）。
+> 如果传入到appendChild中的节点已经是文档的一部分，那结果就是该节点从原来的位置**转移**到新位置。（任何DOM节点不能同事出现在文档的多个位置上）。
 
 ````js
 // 如果在调用appendChild()时传入了父节点的第一个子节点，那么该节点就会成为父节点的最后一个子节点。
@@ -155,10 +155,99 @@ alert(returnedNode == someNode.firstChild); // false
 alert(returnedNode == someNode.lastChild); // true
 ````
 
-:open_mouth: 需要了解appendChild实现的源码，待更新
+insertBefore()可以将节点放在某个特定位置上。这个方法接受两个参数：要插入的节点和作为参照的节点。插入节点后，被插入的节点会变成参照节点的前一个同胞节点（previousSibling），同时被方法返回。如果参照节点是null，那么insertBefore()和appendChild()执行相同的操作。
 
+````js
+// 没有api实现在节点后增加节点的方法，自己写一个：
+function insertAfter(newEl, targetEl) {
+	var parentEl = targetEl.parentNode;
+	if(parent.El.lastChild == targetEl) {
+		parentEl.appendChild(newEl);
+	}else {
+		parentEl.insertBefore(newEl, targetEl.nextSibling);
+	}
+}
+````
 
+replaceChild()插入一个节点时，该节点的所有关系指针都会从被它替换的节点复制过来。
 
+removeChild()移除节点。这个方法接受一个参数，即要移除的节点。
+
+> 调用replaceChild()和removeChild()的方法后，被替换/移除的节点仍为文档所有，只是在文档中已经没有了自己的位置。
+
+> 前面说到的4个方法操作的都是某个节点的子节点，使用时要先去的父节点（使用parentNode属性）。但是并非所有类型的节点都有子节点，如果在不支持子节点的节点上调用了这些方法，将导致错误。
+
+有两个方法是所有类型的节点都有的：cloneNode()和normalize()
+
+* cloneNode()用于创建调用这个方法的节点的一个完全相同的副本。这个方法接受一个布尔值参数，表示是否深复制。参数为true时，深复制，也就是赋值节点及其整个子节点树；参数为false的情况下，执行浅复制，即只复制节点本身。复制后返回的节点副本属于文档所有，但并没有为它指定父节点。除非通过appendChild()、insertBefore()或replaceChild()将它添加到文档中，否则这个副本就是一个"孤儿"。
+
+````js
+// 有如下HTML代码
+<ul>
+	<li>item 1</li>
+	<li>item 2</li>
+	<li>item 3</li>
+</ul>
+
+// 将<ul>元素的引用保存在变量myList中，分别看看cloneNode()的两种模式：
+var deepList = myList.cloneNode(true);
+alert(deepList.childNodes.length); // 3(IE < 9) 或 7(其他浏览器)，因为IE9之前版本与其他浏览器处理空白字符的方式不同，不会为空白符创建节点。
+
+var shallowList = myList.cloneNode(false);
+alert(shallowList.childNodes.length); // 0
+````
+
+* normalize()方法唯一的作用是处理文档树中的文本节点。由于解析器的实现或DOM操作等原因，可能会出现文本节点不包含文本，或者接连出现两个文本节点的情况。本章后续将具体讨论。
+
+#### Document类型
+
+JS通过Document类型表示文档。浏览器中，document对象是HTMLDocument(继承自Document类型)的一个实例，表示整个HTML页面。而且，document对象也是window对象的一个属性，因此可以当做全局对象来访问。Document节点有以下特征：
+
+- [ ] nodeType的值为9；
+- [ ] nodeName的值为"#document"；
+- [ ] nodeValue的值为null；
+- [ ] parentNode的值为null；
+- [ ] ownerDocument的值为null；
+- [ ] 其子节点可能是一个DocumentType（最多一个）、Element（最多一个）、ProcessingInstruction或Comment。
+
+document文档对象不仅可以取得与页面有关的信息，还能操作页面的外观及其底层结构。
+
+* 1 文档的子节点
+
+DOM明确规定了子节点的类型，也提供了两个内置的访问其子节点的快捷方式：documentElement属性和childNodes列表
+
+documentElement属性始终指向HTML页面中的&lt;html&gt;元素（更快捷、更直接访问该元素）;
+
+childNodes列表访问文档元素。
+
+如下所示：
+
+````js
+<html>
+	<body>
+	</body>
+</html
+
+// 经过浏览器解析，其文档中只包含一个子节点&lt;html&gt;元素，通过以上两种方式访问：
+var html = document.documentElement; // 取得对&lt;html&gt;的引用
+alert(html === document.childNodes[0]); // true
+alert(html === document.firstChild); // true
+````
+
+document还有一个body属性，指向&lt;body&gt;元素，通过`document.body`访问。
+
+Document另一个可能的子节点是DocumentType。通常将&lt;DOCTYPE&gt;看成一个与文档其他部分不同的实体，在浏览器中通过`document.doctype`访问。
+
+但不同浏览器对document.doctype的支持差别很大，尽量减少使用。
+
+不同浏览器对出现在&lt;html&gt;外部的注释的解释也很不同，也导致外部注释没有什么用。
+
+* 2 文档的信息
+
+作为HTMLDocument的实例，document对象还有一些标准的Document对象没有的属性。这些属性提供了document对象所表现的网页的一些信息。
+
+	1.title：包含&lt;title&gt;元素中的文本，现在在浏览器窗口标题栏或标签页上。可以获取title内容也可以修改title。
+	2.
 
 
 
