@@ -246,8 +246,56 @@ Document另一个可能的子节点是DocumentType。通常将&lt;DOCTYPE&gt;看
 
 作为HTMLDocument的实例，document对象还有一些标准的Document对象没有的属性。这些属性提供了document对象所表现的网页的一些信息。
 
-	1.title：包含&lt;title&gt;元素中的文本，现在在浏览器窗口标题栏或标签页上。可以获取title内容也可以修改title。
-	2.
+	1.title：包含&lt;title&gt;元素中的文本，现在在浏览器窗口标题栏或标签页上。可以获取title内容也可以修改title。`document.title`
+	2.URL：包含页面完整的URL（即地址栏显示的URL）。`document.URL`
+	3.domain：包含页面的域名。`document.domain`
+	4.referrer：保存着链接到当前页面的那个页面的URL。在没有源页面的情况下，这个属性可能包含空字符串。`document.referrer`
+	
+	domain属性也可以设置，但出于安全考虑，不能将domain设置为URL中不包含的域。当页面中包含来自其他子域的框架或者内嵌框架时，将domain设置一样使得不同页面可以互相访问对方的JavaScript对象。
+	domain还有一个限制，如果域名一开始是"松散的"（loose），那么就不能设置为"紧绷的"（tight）。比如域名一开始是"wrox.com"，那么就不能再设置为"p2p.wrox.com"	
+* 3 查找元素
+
+document对象有一个取得特定或某组元素的引用的方法：
+
+	1. getElementById(id)，根据id能找到相应元素（严格匹配）则返回第一次出现的该元素，否则返回null
+	2. getElementByTagName(tag)，接受一个参数即要取得元素的标签名，返回的是包含0或多个元素的NodeList。会返回一个HTMLCollection对象，是一个**动态集合**，和NodeList对象类似。
+
+	可以通过HTMLCollection对象的namedItem()方法访问，也可以通过方括号语法访问。
+	
+	````js
+	// 有如下html
+	// <img src="myimage.gif" name="myImage" />
+	var images = document.getElementByTagName("img");
+	// namedItem
+	var myImage0 = images.namedItem("myImage");
+	// 方括号语法
+	var myImage1 = images["myImage"];
+	````
+	
+	getElementByTagName()方法传入"*"可以获取到整个页面元素的所有元素——按它们出现的先后顺序。
+	
+	3. getElementsByName()，是只有HTMLDocument类型才有的方法，会返回带有给定name特性的所有元素。常用这个方法取得单选按钮，name特性可以确保三个值中只有一个被发送给浏览器。
+
+* 4 特殊集合
+
+document对象还有一些特殊的集合，这些集合都是HTMLCollection对象，为访问文档常用的部分提供了快捷方式，包括：
+
+- [ ] document.anchors，包含文档中所有带name特性的&lt;a&gt;元素；
+- [ ] document.applets，包含文档中所有的&lt;applet&gt;（applet元素不再推荐使用了）；
+- [ ] document.forms，包含文档中所有的&lt;form&gt;元素，与document.getElementsByTagName("form")得到的结果相同；
+- [ ] document.images，包含文档中所有的&lt;img&gt;元素，与document.getElementsByTagName("img")得到的结果相同；
+- [ ] document.links，包含文档中所有带href特性的&lt;a&gt;元素。
+
+与HTMLCollection对象类似，集合中的项也会随着当前文档内容的更新而更新。
+
+* 5 DOM一致性检测
+
+由于DOM分为多个级别，也含有多个部分，因此检测浏览器实现了DOM的哪个部分就十分必要。
+
+
+
+	
+
 
 
 
