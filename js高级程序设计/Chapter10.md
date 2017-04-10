@@ -290,7 +290,62 @@ document对象还有一些特殊的集合，这些集合都是HTMLCollection对�
 
 * 5 DOM一致性检测
 
-由于DOM分为多个级别，也含有多个部分，因此检测浏览器实现了DOM的哪个部分就十分必要。
+由于DOM分为多个级别，也含有多个部分，因此检测浏览器实现了DOM的哪个部分就十分必要。`document.implementation`属性就是为此提供相应信息和功能的对象，与浏览器对DOM的实现直接对应。
+
+DOM1级只为document.implementation规定了一个方法，即hasFeature()。这个方法接受两个参数：要检测的DOM功能的名称及版本号。如果浏览器支持给定的名称和版本，则返回true。
+
+````js
+var hasXmlDom = document.implementation.hasFeature("XML", "1.0");
+````
+
+hasFeature()也有缺点，这个方法返回true并不意味着现实与规范的一致。
+
+因此在多数情况下，除了hasFeature()一致性检测外，还应同时使用能力检测。
+
+* 6 文档写入
+
+document对象具有将输出流写入到网页中的能力。体现在write()、writeln()、open()和close()方法中。
+
+其中前两个方法接受一个参数，即要写入到输出流中的文本，write()原样写入，writeln()会换行。其中前两个方法可以引入外部资源或是动态地向页面加入内容，但对特殊符号需要**转义处理**。如"</script>"转义后应该是"<\/script>"。
+
+open()和close()分别用于打开和关闭网页的输出流。
+
+#### Element类型
+
+Element类型用于表现XML或HTML元素，提供了对元素标签名、子节点及特性的访问。Element节点具有以下特征：
+
+- [ ] nodeType的值为1；
+- [ ] nodeName的值为元素的标签名；
+- [ ] nodeValue的值为null；
+- [ ] parentNode可能是Document或Element；
+- [ ] 其子节点可能是Element、Text、Comment、ProcessingInstruction、CDATASection或EntityReference。
+
+访问标签名可以使用nodeName或tagName属性，这两个属性返回值相同。HTML中，返回的标签名全部以大写表示，而XML中则不同。因此保险起见，最好在比较之前转换为相同大小写格式。
+
+````js
+if(element.tagName.toLowerCase() == "div") { // 这样适用于任何格式的文档
+	// 这里执行某些操作
+}
+````
+
+* 1 HTML元素
+
+所有的HTML元素都由HTMLElement类型表示，直接通过这个类型或是通过它的子类型。HTMLElement类型直接继承自Element类型并添加了一些属性，这些属性分别对应与每个HTML元素中都存在的下列标准特性：
+
+- [ ] id，元素在文档中的唯一标识符；
+- [ ] title，有关元素的附加说明信息，一般通过工具提示条显示；
+- [ ] lang，元素内容的语言代码；
+- [ ] dir，语言的方向，值为ltr或rtl；
+- [ ] className，与元素的class特性对应，即为元素指定的CSS类。
+
+通过JavaScript代码，可以取得元素以上的内容，也可以修改对应的每个特性。不是所有的修改都会在页面上直观地表现出来。
+
+* 2 取得特性
+
+
+
+
+
 
 
 
