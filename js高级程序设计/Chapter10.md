@@ -342,6 +342,183 @@ if(element.tagName.toLowerCase() == "div") { // 这样适用于任何格式的�
 
 * 2 取得特性
 
+每个元素都有一或多个特性，这些特性的用途是给出相应元素或其内容的附加信息。操作特性的DOM方法主要有3个：getAttribute()、setAttribute()和removeAttribute()。这3个特性可以针对任何特性使用。
+
+有两类特殊的特性，它们虽然有对应的属性名，但属性的值与通过getAttribute()返回的值并不相同。
+
+第一类特性是style，用于通过CSS指定样式；通过getAttribute()访问时返回的是CSS文本，而通过属性来访问则会返回一个对象。第二类是onclick等事件处理程序。在使用方法访问时，会返回对应javascript代码的字符串；而访问onclick属性时，会返回一个JavaScript函数。
+
+基于以上原因，开发时推荐使用对象属性的方法；在取得自定义特性值的情况下，才使用getAttribute()方法。
+
+* 3 设置特性
+
+setAttribute() 接受两个参数：要设置的特姓名和值。如果特性已存在会替换已有的值，如果不存在则创建该属性并设置相应的值。
+
+因为所有特性都是属性，所以可以用直接给属性赋值的方式设置特性的值：
+
+````js
+div.id = "someOtherId";
+````
+
+但是为DOM元素添加一个自定义属性时，该属性不会自动成为元素的特性（大多数浏览器中是如此，IE中相反）：
+
+````js
+div.myColor = "red";
+alert(div.getAttribute("myColor")); // null(IE除外)
+````
+
+removeAttribute() 这个方法用于彻底删除元素的特性。调用这个方法不仅会清除特性的值，也会从元素中完全删除特性。
+
+* 4 attributes属性
+
+Element类型是使用attributes属性的唯一一个DOM节点类型。attributes属性中包含一个NamedNodeMap，是与NodeList类似的一个"动态"集合。元素的每一个特性都由一个Attr节点表示，每个节点都保存在NamedNodeMap对象中。NamedNodeMap对象拥有下列方法：
+
+- [ ] getNamedItem(name)：返回nodeName属性等于name的节点；
+- [ ] removeNamedItem(name)：从列表中移除nodeName属性等于name的节点；
+- [ ] setNamedItem(node)：从列表中添加节点，以节点的nodeName属性为索引；
+- [ ] item(pos)：返回位于数字pos位置处的节点。
+
+````js
+// 获取元素的id特性：
+var id = element.attributes.getNamedItem("id").nodeValue;
+// 使用方括号语法通过特性名称访问节点
+var id = element.attributes["id"].nodeValue;
+// 也可以为nodeValue设置新值
+element.attributes["id"].nodeValue = 'someOtherId';
+````
+
+removeNamedItem() 会直接删除具有给定名称的特性。
+
+attributes方法在遍历属性时会非常有用。需要注意的是：
+
+- [ ] 针对attributes对象中的特性，不同浏览器返回的顺序不同。
+- [ ] IE7及更早版本会返回HTML元素中所有可能特性，包括没有指定的特性。
+
+* 5 创建元素
+
+document.createElement() 方法可以创建新元素，这个方法只接受一个参数，即要创建元素的标签名。这个标签名的HTML中不区分大小写。
+
+也可以为这个方法传入完整的元素标签（包含属性）：
+
+````js
+var div = document.createElement("<div id=\"myNewDiv\" class=\"box\"></div>");
+````
+
+在使用createElement()创建新元素的同时，也为新元素设置了ownerDocument属性。此时，还可以操作元素的特性，为它添加更多子节点，或是执行其他操作。
+
+以上只是赋予了相应信息，还需要把新元素添加到文档树中，可以使用appendChild()、insertBefore()或replaceChild()方法。比如
+
+````js
+document.body.appendChild(div);
+````
+
+一旦添加到文档树中，浏览器就会立刻呈现该元素。此后对该元素所作的任何修改都会实时反映在浏览器中。
+
+IE7及更早版本中动态创建元素存在某些问题，这里不进行讨论。
+
+* 6 元素的子节点
+
+元素可以有任意数目的子节点和后代节点，childNodes属性中包含了它的所有字节点，这些子节点有可能是元素、文本节点、注释或处理指令。
+
+不同浏览器在看待这些节点方面存在显著不同：是否删除空白符。
+
+````js
+for(var i =0, len= element.childNodes.length; i < len; i++) {
+	if(element.childNodes[i].nodeType == 1) {
+		// 执行某些操作
+	}
+}
+````
+
+这个例子会循环遍历元素的每一个子节点，只在nodeType等于1的情况下才会执行某些操作。
+
+#### Text类型
+
+文本节点由Text类型表示，包含的是可以照字面解释的纯文本内容。纯文本可以包含转义后的HTML字符，但不能包含HTML代码。Text节点具有以下特征：
+
+- [ ] nodeType的值为3；
+- [ ] nodeName的值为"#text";
+- [ ] nodeValue的值为节点所包含的文本；
+- [ ] parentNode是一个Element；
+- [ ] 不支持（没有）子节点。
+
+可以通过nodeValue属性或data属性访问Text节点中包含的文本，这两个属性中包含的值相同。对其中一个属性的修改也会通过另一个属性反映出来。可以使用下列方法操作节点中的文本：
+
+- [ ] appendData(text)：将text添加到节点的末尾。
+- [ ] deleteData(offset, count)：从offset指定的位置开始删除count个字符。
+- [ ] insertData(offset, text)：在offset指定的位置插入text。
+- [ ] replaceData(offset, count, text)：用text替换从offset指定的位置开始到offset+count为止处的文本。
+- [ ] splitText(offset)：从offset指定的位置将当前文本节点分成两个文本节点。
+- [ ] substringData(offset, count)：提取从offset指定的位置开始到offset+count为止处的字符串。
+
+文本节点还有一个length属性，保存着节点中字符的数目。而且，nodeValue.length和data.length中也保存着同样的值。
+
+在默认情况下，每个可以包含内容的元素最多只能有一个文本节点，而且必须确实有内容存在。
+
+````js
+<!-- 没有内容，也就没有文本节点 -->
+<div></div>
+
+<!-- 有空格，因而有一个文本节点，nodeValue的值是空格 -->
+<div> </div>
+
+<!-- 有内容，因而有一个文本节点，nodeValue的值是"Hello World!" -->
+<div>Hello World!</div>
+
+<!-- 可以像这样修改文本节点的内容 -->
+div.firstChild.nodeValue = "Some Other message";
+````
+
+如果这个文本节点当前存在于文档树中，那么修改文本节点的结果会立即得到反映。在修改文本节点时的字符串会经过HTML编码（特殊符号会被转义）。
+
+* 1 创建文本节点
+
+可以使用document.createTextNode()创建新文本节点，这个方法接受一个参数——要插入节点中的文本。作为参数的文本也将按照HTML或XML的格式进行编码。
+
+在创建新文本节点的同时也会为其设置ownerDocument属性。只有把新节点添加到文档树中已经存在的节点中时，我们才会在浏览器窗口中看到新节点。
+
+````js
+// 创建一个<div>元素并向其中添加一条消息：
+var element = document.createElement("div");
+element.className = "message";
+
+var textNode = document.createTextNode("Hello world!");
+element.appendChild(textNode);
+
+document.body.appendChild(element);
+````
+
+某些情况下，一个Element元素可能包含多个文本子节点。如果两个文本节点是相邻的同胞节点，那么这两个节点中的文本就会连起来显示，中间不会有空格。
+
+* 2 规范化文本节点
+
+DOM文档中存在相邻的同胞文本节点很容易导致混乱，于是催生了一个合并相邻文本节点的方法。
+
+这个方法由Node类型定义（因而在所有节点类型中都存在），名叫normalize()。如果在一个包含两个或多个文本节点的父元素上调用normalize()方法，则会将所有文本节点合并成一个节点。
+
+浏览器在解析文档时永远不会创建相邻的文本节点，这种情况只会作为执行DOM操作的结果出现。
+
+* 3 分割文本节点
+
+Text类型提供了一个与normalize()相反的方法：splitText()。这个方法会将一个文本节点分成两个文本节点，即按照指定的位置分割nodeValue值。原来的文本节点将包含从开始到指定位置之前的内容，新文本节点将包含剩下的文本。新文本节点与原节点的parentNode相同。
+
+分割文本几点是从文本节点中提取数据的一种常用DOM解析技术。
+
+#### Comment类型
+
+注释在DOM中是通过Comment类型来表示的。Comment节点具有下列特征：
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
