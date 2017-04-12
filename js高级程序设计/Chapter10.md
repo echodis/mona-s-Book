@@ -508,6 +508,123 @@ Text类型提供了一个与normalize()相反的方法：splitText()。这个方
 
 注释在DOM中是通过Comment类型来表示的。Comment节点具有下列特征：
 
+- [ ] nodeType的值为8；
+- [ ] nodeName的值为"#comment"；
+- [ ] nodeValue的值是注释的内容；
+- [ ] parentNode可能是Document或Element；
+- [ ] 不支持（没有）子节点。
+
+Comment类型与Text类型继承自相同基类，拥有除splitText()之外的所有字符串操作方法。也可以通过**nodeValue或data属性**来取得注释内容。
+
+注释节点可以通过其父节点来访问：
+
+````js
+<div id="myDiv">
+	<!-- A comment -->
+</div>
+
+// 可通过如下代码访问
+var div = document.getElementById("myDiv");
+var comment = div.firstChild;
+alert(**comment.data**);  // "A comment"
+````
+
+document.createComment()可以为其传递注释文本也可以创建注释节点：
+
+````js
+var comment = document.createComment("A comment");
+````
+
+浏览器不会识别位于&lt;/html&gt;标签后面的注释。一般也很少访问注释节点，注释节点对算法也少有影响。
+
+#### CDATASection类型
+
+CDATASection类型只针对基于XML的文档，表示的是CDATA区域。CDATASection类型继承自Text类型，因此拥有splitText()之外的所有字符串操作方法。
+
+CDATASection节点具有一下特征：
+
+- [ ] nodeType的值为4；
+- [ ] nodeName的值为"#cdata-section"；
+- [ ] nodeValue的值是CDATA区域中的内容；
+- [ ] parentNode可能是Document或Element；
+- [ ] 不支持（没有）子节点。
+
+CDATA区域只会出现在XML文档中，浏览器都不能真正解析此内容。
+
+在真正的XML文档中，可以使用document.createCDataSection()来创建CDATA区域。
+
+#### DocumentType类型
+
+DocumentType类型在Web浏览器中并不常用，仅有少数浏览器支持。DocumentType包含着与文档的doctype有关的所有信息，具有以下特征：
+
+- [ ] nodeType的值为10；
+- [ ] nodeName的值为doctype的名称；
+- [ ] nodeValue的值为null；
+- [ ] parentNode是Document；
+- [ ] 不支持（没有）子节点。
+
+DOM1级中，DocumentType不能动态创建，只能通过解析文档代码的方式创建。支持它的浏览器会把DocumentType对象保存在document.doctype中。DOM1级描述了DocumentType对象的3个属性：name、entities和notations。其中name表示文档类型的名称，只有name属性是有用的，即出现在&lt;!DOCTYPE&gt;之后的文本。
+
+#### DocumentFragment类型
+
+在所有节点类型中，只有DocumentFragment类型在文档中没有对应的标记。DOM规定文档片段（document fragment）是一个"轻量级"文档，可以包含和控制节点，但不会像完整文档那样占用额外资源。
+
+DoucmentFragment节点具有下列特征：
+
+- [ ] nodeType的值为11；
+- [ ] nodeName的值为"#document-fragment"；
+- [ ] nodeValue的值为null；
+- [ ] parentNode的值为null；
+- [ ] 子节点可以是Element、ProcessingInstruction、Comment、Text、CDATASection或EntityReference。
+
+虽然不能把文档片段直接添加到文档中，但可以将它作为一个仓库来使用，即可以在里面保存将来可能会添加到文档中的节点。
+
+使用document.createDocumentFragment()方法创建文档片段：
+
+````js
+var fragment = document.createDocumentFragment();
+````
+
+文档片段继承了Node的所有方法，通常用于执行那些针对文档的DOM操作。将文档添加到文档片段中就会从文档树中移除该节点。也可以通过appendChild()或insertBefore()方法将文档片段中的内容添加到文档中（此时只会将文档片段的所有子节点添加到响应位置上；**文档片段本身永远不会成为文档树的一部分**）。
+
+#### Attr类型
+
+元素的特性在DOM中以Attr表示。在所有浏览器中都可以访问Attr类型的构造函数和原型。从技术角度来说，特性就是存在于元素的attributes属性中的节点。特性节点具有下列特征：
+
+- [ ] nodeType的值为2；
+- [ ] nodeName的值是特性的名称；
+- [ ] nodeValue的值是特性的值；
+- [ ] parentNode的值为null；
+- [ ] 在HTML中不支持（没有）子节点；
+- [ ] 在XML中子节点可以是Text或EntityReference。
+
+尽管它们也是节点，但特性却不被认为是DOM文档树的一部分。开发人员最常使用的是getAttribute()、setAttribute()和removeAttribute()方法，很少直接引用特性节点。
+
+Attr对象有3个属性：name、value和sepecified。其中name是特性名称（与nodeName值相同），value是特性的值（与nodeValue的值相同），specified是一个布尔值，用以区别特性是在代码中指定的还是默认的。
+
+document.createAttribute()并传入特性名称可以创建新的特性节点。如为元素添加align特性：
+
+````js
+vat attr = document.createAttribute("align");
+attr.value = "left";
+element.setAttributeNode(attr);
+
+// 添加特性后，可以通过任何方式访问该特性
+alert(element.getAttributeNode("align").value); // "left"
+````
+
+### 10.2 DOM操作技术
+
+由于浏览器存在兼容等隐藏陷阱，用JavaScript代码处理DOM的某些部分要比处理其他部分更复杂。
+
+#### 动态脚本
+
+
+
+
+
+
+
 
 
 
