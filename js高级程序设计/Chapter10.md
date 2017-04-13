@@ -619,7 +619,102 @@ alert(element.getAttributeNode("align").value); // "left"
 
 #### 动态脚本
 
+这里要讨论的动态脚本，指的是在页面加载时不存在，但将来某一时刻通过修改DOM动态添加的脚本。
 
+创建动态脚本有两种方式：插入外部文件和直接插入JavaScript代码。
+
+动态加载的外部JavaScript文件能够立即运行：
+
+````js
+var script = document.createElement("script");
+script.type = "text/javascript";
+script.src = "client.js"; // 引入外部文件
+document.body.appendChild(script); // 执行这最后一步之前，是不会下载外部文件的。
+````
+
+脚本加载完后就可以在页面其他地方使用这个脚本了。
+
+另一种方式是行业方式动态添加脚本：
+
+````js
+var script = document.createElement("script");
+script.type = "text/javascript";
+**script.text** = "function sayHi(){alert('hi');}";
+document.boyd.appendChild(script);
+````
+
+这个方法针对早期浏览器还有兼容版本，主要是通过try-catch语句处理，在这里就不进行探讨了。
+
+#### 动态样式
+
+有两个元素能把CSS样式包含到HTML页面，其中&lt;link&gt;用于包含来自外部的文件；&lt;style&gt;用于指定嵌入的样式。
+
+和动态脚本类似，动态样式也有两种增加方式：
+
+````js
+// <link rel="stylesheet" type="text/css" href="styles.css"></link>
+
+var link = document.createElement("link");
+link.rel = "stylesheet";
+link.type = "text/css";
+link.href= "style.less";
+var head = document.getElementsByTagName("head")[0];
+head.appendChild(link);  // 将link元素添加到head元素中
+````
+
+加载外部样式文件的过程是异步的，也就是说加载样式与执行js代码过程没有固定次序。具体检测是否加载完成的事件检测过程将在13章进行讨论。
+
+第二种方法是包含嵌入式CSS：
+
+````js
+var style = document.createElement("style");
+style.type = "text/css";
+style.appendChild(document.createTextNode("body{background-color:red}"));
+var head = document.getElementsByTagName("head")[0];
+head.appendChild(style);
+````
+
+针对IE不兼容的情况，可以进行如下处理：
+
+````js
+var style = document.createElement("style");
+style.type = "text/css";
+try {
+	style.appendChild(document.createTextNode("body{background-color:red}"));
+} catch(ex) {
+	style.styleSheet.cssText = "body{background-color:red}";
+}
+
+var head = document.getElementsByTagName("head")[0];
+head.appendChild(style);
+````
+
+#### 操作表格
+
+表格&lt;table&gt;元素是HTML中最复杂的结构之一。创建表格涉及表格行、单元格、表头等标签，所以使用核心DOM方法来创建和修改表格都免不了编写大量代码。
+
+核心DOM方法需要分别创建table、tbody、第一行、第n行，最后将表格添加到文档主体中。
+
+为了方便构建表格，HTML DOM为table、tbody和tr元素添加了一些属性和方法。下面列举部分：
+
+为&lt;table&gt;元素添加的属性和方法：
+
+- [ ] tHead: 保存着对&lt;thead&gt;元素（如果有）的指针；
+- [ ] rows: 一个表格中所有行的HTMLCollection；
+- [ ] deleteHead: 删除&lt;thead&gt;元素；
+- [ ] deleteRow(pos): 删除指定位置的行；
+- [ ] insertRow(pos): 向rows集合中的指定位置插入一行，返回对新插入行的引用。
+
+为&lt;tr&gt;元素添加的属性和方法：
+
+- [ ] cells: 保存着&lt;tr&gt;元素单元格的HTMLCollection；
+- [ ] deleteCell(pos): 删除指定位置的单元格；
+- [ ] insertCell(pos): 向cells集合中的指定位置插入一个单元格，返回对新插入单元格的引用。
+
+使用这些属性和方法可以极大减少创建表格所需的代码数量。以创建一个表格为例：
+
+````js
+````
 
 
 
