@@ -714,7 +714,68 @@ head.appendChild(style);
 使用这些属性和方法可以极大减少创建表格所需的代码数量。以创建一个表格为例：
 
 ````js
+// 创建table
+var table = document.createElement("table");
+table.border = 1;
+table.width = "100%";
+
+// 创建tbody
+var tbody = document.createElement("tbody");
+table.appendChild(tbody);
+
+// 创建第一行
+tbody.insertRow(0);
+tbody.rows[0].insertCell(0);
+tbody.rows[0].cells[0].appendChild(document.createTextNode("Cell 1,1"));
+tbody.rows[0].insertCell(1);
+tbody.rows[0].cells[1].appendChild(document.createTextNode("Cell 2,1"));
+
+// 创建第二行
+tbody.insertRow(1);
+tbody.rows[1].insertCell(0);
+tbody.rows[1].cells[0].appendChild(document.createTextNode("Cell 1,2"));
+tbody.rows[1].insertCell(1);
+tbody.rows[1].cells[1].appendChild(document.createTextNode("Cell 2,2"));
+
+// 将表格添加到文档主体中
+document.body.appendChild(table);
 ````
+
+#### 使用NodeList
+
+理解NodeList及其"近亲"NameNodeMap和HTMLCollection，是从整体上透彻理解DOM的关键所在。这三个集合都是动态的，每当文档结构发生变化时，它们就会得到更新。它们始终保存着最新、最准确的信息。
+
+所有NodeList对象都是在访问DOM文档时实时运行的查询：
+
+比如，下列代码会导致循环：
+
+````js
+var divs = document.getElementsByTagName("div"),
+	i,
+	div;
+for(i = 0; i < divs.length; i++) {
+	div = document.createElement("div");
+	document.body.appendChild(div);
+}
+````
+
+每次获取到的lenght长度都在之前的基础上+1，因此循环无法结束。对于这种情况，想迭代的话可以通过初始化后的变量进行：
+
+````js
+var divs = document.getElementsByTagName("div"),
+	i,
+	div;
+for(i = 0, len = divs.length; i < len; i++) {
+	div = document.createElement("div");
+	document.body.appendChild(div);
+}
+````
+
+一般来说，应该尽量减少访问NodeList的次数。因为每次访问NodeList，都会运行一次基于文档查询。
+
+### 10.3 总结
+
+理解DOM的关键，就是理解DOM对性能的影响。DOM操作往往是JavaScript程序中开销最大的部分，因而访问NodeList导致的问题最多（每次访问动态NodeLIist对象都会运行一次文档查询），最好的办法是减少DOM操作。
 
 
 
