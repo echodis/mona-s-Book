@@ -1,0 +1,299 @@
+## 第十一章：DOM扩展
+
+本章内容
+
+- [ ] 理解Selectors API
+- [ ] 使用HTML5 DOM扩展
+- [ ] 了解专有的DOM扩展
+
+对DOM的两个主要的扩展是Selectors API（选择符API）和HTML5。这两个扩展都源自开发者社区。还有一个Element Traversal（元素遍历）规范，为DOM添加了一些属性。虽然前述两个主要规范已经涵盖了大量的DOM扩展，但专有扩展依然存在。
+
+### 11.1 选择符API
+
+众多JavaScript库中最常用的一项功能，就是根据CSS选择符选择与狗哥模式匹配的DOM元素。实际上jQuery的核心就是通过CSS选择符查询DOM文档取得元素的引用。
+
+Selectors API是由W3C发起制定的一个标准，致力于让浏览器原生支持CSS查询。这个功能变成原生API后，解析和树查询操作可以在浏览器内部通过编译后的代码来完成，极大地改善了性能。
+
+Selectors API Level1的核心是两个方法：querySelector()和querySelectorAll()。在兼容的浏览器中，可以通过Document及Element类型的实例调用它们。
+
+#### querySelector()方法
+
+querySelector()方法接收一个CSS选择符，返回与该模式匹配的第一个元素，如果没有找到匹配的元素，则返回null。例子如下：
+
+````js
+// 取得body元素
+var body = document.querySelector("body");
+
+// 取得ID为"myDiv"的元素
+var myDiv = document.querySelector("#myDiv");
+
+// 取得类为"selected"的第一个元素
+var selected = document.querySelector(".selected");
+
+// 取得类为"button"的第一个图像元素
+var img = document.body.querySelector("img.buttn");
+````
+
+通过Document类型调用querySelector()方法时，会在文档元素的范围内查找匹配的元素；而通过Element类型调用querySelector()方法时，只会在该元素后代元素的范围内查找匹配的元素。
+
+作为参数传入的CSS选择符可以简单也可以复杂，如果传入了不被支持的选择符，querySelector()会抛出错误。
+
+#### querySelectorAll()方法
+
+querySelectorAll()方法接收的参数与querySelector()方法一样，都是一个CSS选择符，但返回的是所有匹配的元素而不仅仅是一个元素。
+
+返回的是一个NodeList的实例，返回的值实际上是带有所有属性和方法的NodeList，**其底层实现类似于一组元素的快照，而非不断对文档进行搜索的动态查询**。
+
+````js
+// 取得div中所有em元素
+var ems = document.getElementById("myDiv").querySelectorAll("em");
+
+// 取得类为"selected"的所有元素
+var selecteds = document.querySelectorAll(".selected");
+
+// 取得所有p元素中的所有strong元素
+var strongs = document.querySelectorAll("p strong");
+
+// 要取得返回的NodeList中的每一个元素，可以使用item()方法，也可以使用方括号语句。如：
+var i, len, strong;
+for(i=0, len=strongs.length; i<len; i++) {
+	strong = strongs[i]; // 或strongs.item(i)
+	strong.className = "important";
+}
+````
+
+同样，如果传入了浏览器不支持的选择符或者选择符中有语法错误，querySelectorAll() 会抛出错误。
+
+#### matchesSelector()方法
+
+Selectors API Level2规范为Element类型新增了这个方法。这个方法接收一个参数，即CSS选择符。如果调用元素与该选择符匹配，返回true；否则，返回false。看例子：
+
+````js
+if(document.body.matchesSelector("body.page1")) {
+	// true
+}
+````
+
+考虑兼容性的情况下，使用这个方法最好编写一个包装函数：
+
+````js
+function matchesSelector(element, selector) {
+	if(element.matchesSelector) {
+		return element.matchesSelector(selector);
+	}else if(element.msMatchesSelector) {
+		return element.msMatchesSelector(selector);
+	}else if(element.mozMatchesSelector) {
+		return element.mozMatchesSelector(selector);
+	}else if(element.webkitMatchesSelector) {
+		return element.webkitMatchesSelector(selector);
+	}else {
+		throw new Error("Not supported.");
+	}
+}
+
+if(matchesSelector(document.body, "body.page1")) {
+	// 执行操作
+}
+````
+
+### 元素遍历
+
+对于元素间的空格，IE9及之前的版本不会返回文本节点，而其他所有浏览器都会返回文本节点。这样就导致了在使用childNodes和firstChild等属性时行为的不一致。为了弥补这一差异，同时又保持DOM规范不变，Element Traversal API为DOM元素添加了以下5个属性：
+
+- [ ] childElementCount: 返回子元素（不包括文本节点和注释）的个数；
+- [ ] firstElementChild: 指向第一个子元素，firstChild的元素版；
+- [ ] lastElementChild: 指向最后一个子元素，lastChild的元素版；
+- [ ] previousElementSibling: 指向前一个同辈元素；previousSibling的元素版；
+- [ ] nextElementSibling: 指向后一个同辈元素；nextSibling的元素版。
+
+利用这则属性就不必担心空白文本节点，从而可以更方便地查找DOM元素了。
+
+````js
+// 看个例子,html
+<div id="abc">
+	<span>a</span>
+	<span>b</span>
+	c
+</div>
+
+// js：
+var abc = document.querySelector("#abc");
+console.log(abc.lastChildElement); // <spna>b</span>
+console.log(abc.childElementCount); // 2
+````
+
+### HTML5
+
+之前版本的HTML的篇幅都主要用于定义标记，与js相关的内容一概交由DOM规范定义。而HTML5规范则围绕如何使用新增标记定义了大量JavaScript API。其中一些与DOM重叠，定义了浏览器应该支持的DOM扩展。
+
+这里讨论HTML与DOM节点相关的内容。
+
+#### 与类相关的扩充
+
+为了让开发人员适应并增加对class属性的新认识，HTML5新增了很多API，致力于简化CSS类的用法。
+
+* 1 getElementsByClassName()方法
+
+接受一个参数，即一个包含一或多个类名的字符串，返回带有指定类的所有元素的NodeList。传入过个类名时，类名的先后顺序不重要。
+
+````js
+// 取得所有类中包含"username"和"current"的元素，类名的先后顺序无所谓。
+var allCurrentUsernames = document.getElementsByClassName("username current");
+````
+
+返回的对象是NodeList，所以这个方法与其他返回NodeList方法具有同样的性能问题。
+
+* 2 classList属性
+
+在操作类名时，需要通过className属性添加、删除和替换类名。因为className中是一个字符串，所以即使只修改字符串的一部分，也必须每次都设置整个字符串的值。
+
+````js
+<div class="bd user disabled">...</div>
+````
+
+以上div有三个类名，要修改或删除一个，需要将这三个类名拆开，删除不想要的那个再把其他类名拼成一个新字符串。
+
+HTML5新增了一种操作类名的方式，可以让操作更简单也更安全，那就是为所有元素添加classList属性。这个classList属性是新集合类型DOMTokenList的实例。
+
+这个类型有一个表示自己包含多少元素的length属性，要取得每个元素可以使用item()方法，也可以使用方括号语法。此外，这个新类型还定义如下方法：
+
+- [ ] add(value)：将给定的字符串值添加到列表中。如果值已经存在，就不添加；
+- [ ] contains(value)：表示列表中是否存在给定的值，如果存在则返回true，否则返回false；
+- [ ] remove(value)：从列表中删除给定的字符串；
+- [ ] toggle(value)：如果列表中已经存在给定的值，删除它；如果列表中没有给定的值，则添加它。
+
+以上代码能确保其它类名不受对某个类名修改的影响，也能简化其他基本操作的复杂度：
+
+````js
+// 删除user类
+div.classList.remove("user");
+// 添加current类
+div.classList.add("current");
+// 切换user类
+div.classList.toggle("user");
+````
+
+#### 焦点管理
+
+HTML5也添加了辅助管理DOM焦点的功能。首先是document.activeElement属性，这个属性始终会引用DOM中当前获得了焦点的元素。元素获得焦点有页面加载、用户输入（通常是通过按Tab键）和代码中调用focus()方法。
+
+````js
+var button = document.getElementById("myButton");
+button.focus();
+alert(document.activeElement == button);
+````
+
+默认情况下，文档加载时，document.activeElement值为null；文档刚加载完时，document.activeElement中保存的是对document.body元素的引用。
+
+hasFocus()方法用于确定文档是否获得了焦点，获得即返回true，否则返回false。
+
+通过检测文档是否获得了焦点，可以知道用户是不是正在与页面交互。
+
+查询哪个元素获得焦点，以及确定文档是否获得了焦点，这两个功能最重要的用途是提高Web应用的无障碍性。（不用像过去那样靠猜测了）
+
+#### HTMLDocument的变化
+
+HTML5扩展了HTMLDocument，增加了新功能。尽管被写入标准的时间不长，但是很多浏览器早已经支持这些功能了。
+
+新功能如下：
+
+* 1 readyState属性
+
+* 2 兼容模式
+
+* 3 head属性
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
