@@ -199,10 +199,141 @@ HTML5扩展了HTMLDocument，增加了新功能。尽管被写入标准的时间
 
 * 1 readyState属性
 
+readyState属性有两个可能值：
+
+- [ ] laoding，正在加载文档，
+- [ ] complete，已经加载完文档
+
+使用document.readyState用来指示文档是否已经加载完成。
+
+````js
+if(document.readyState == "complete") {
+	// 执行操作
+}
+````
+
 * 2 兼容模式
+
+起源于IE给document添加了名为compatMode的属性，告诉开发人员浏览器采用哪种渲染模式。
+
+标准模式下document.compatMode等于"CSS1Compat"，混杂模式下，document.compatMode等于"BackCompat"。
+
+HTML最终将其纳入标准，并对实现做了明确规定。
+
+````js
+if(document.compatMode == "CSS1Compat") {
+	alert("Standards mode");
+}else {
+	alert("Quirks mode");
+}
+````
 
 * 3 head属性
 
+document.head引用&lt;head&gt;元素。像这样使用：
+
+````js
+var head = document.head || document.getElementsByTagName("head")[0];
+````
+
+#### 字符集属性
+
+charset属性表示文档中实际使用的字符集，也可以指定新字符集。
+
+defaultCharset表示根据默认浏览器及操作系统设置，当前文档默认字符集应该是什么样子。它的值可能和charset不一样。
+
+#### 自定义数据属性
+
+HTML5规定可以为元素添加非标准属性，但要添加前缀data-，目的是为元素提供与渲染无关的信息，或者提供语义信息。
+
+添加了属性后，可以通过元素的dataset属性来访问自定义属性的值。dataset属性的值是DOMStringMap的一个实例，也就是一个名值对儿的映射。每个data-name形式的属性都会以一个没有前缀（data-）的属性存储（如data-myname中映射对应的属性是myname）。
+
+````js
+var div = document.getElementById("myDiv");
+
+// 取得自定义属性的值
+var appId = div.dataset.appid;
+var myName = div.dataset.myname;
+
+//设置值
+div.dataset.appId = 23456;
+div.dataset.myname = "Michael";
+
+// 判断某个属性是否存在
+if(div.dataset.myname) {
+	alert("Hello, " + div.dataset.myname);
+}
+````
+
+#### 插入标记
+
+* 1 innerHTML
+
+在读模式，innerHTML属性返回与调用元素的所有子节点（元素、注释和文本节点）对应的HTML标记（不同浏览器在返回格式上可能有差异）。在写模式，innerHTML会根据指定的值创建新的DOM树，然后用这个DOM树完全替换调用元素原先的所有子节点。
+
+使用innerHTML插入&lt;script&gt;元素时有一些限制，一是插入&lt;script&gt;元素时必须指定defer属性，二&lt;script&gt;元素必须位于"有作用域的元素"之后。
+
+使用innerHTML插入&lt;style&gt;元素支持直接插入。
+
+无论什么时候，只要使用innerHTML从外部插入HTML，都应该首先以可靠的方式处理HTML。
+
+* 2 outerHTML属性
+
+读模式下，outerHTML返回**调用它的元素**及所有子节点的HTML标签。在写模式下，outerHTML会根据指定的HTML字符串创建新的DOM子数，然后用这个DOM子树完全替换调用元素。不同浏览器同样可能在返回格式上产生差异。
+
+在写模式：
+
+````js
+div.outerHTML = "<p>This is a paragragh.</p>";
+
+// 和下列DOM脚本代码一样：
+var p = document.createElement("p");
+p.appendChild(document.createTextNode("This is a paragraph."));
+div.parentNode.replaceChild(p, div);
+````
+
+即新创建的&lt;p&gt;元素会取代DOM树中的&lt;div&gt;元素。
+
+* 3 insertAdjacentHTML()方法
+
+这个方法接收两个参数：插入位置和要插入的HTML文本。第一个参数必须为下列值之一(都是小写)：
+
+- [ ] "beforebegin"：在当前元素之前插入一个紧邻的同辈元素；
+- [ ] "afterbegin"：在当前元素之下插入一个新的子元素或在第一个子元素之前再插入新的子元素；
+- [ ] "beforeend"：在当前元素之下插图一个新的子元素或在最后一个子元素之后再插入新的子元素；
+- [ ] "afterend"：在当前元素之后插入一个紧邻的同辈元素。
+
+第二个参数是一个HTML字符串，如果浏览器无法解析该字符串，就会抛出错误。
+
+基本用法示例如下：
+
+````js
+// 作为前一个同辈元素插入
+element.insertAdjacentHTML("beforebegin", "<p>Hello world!</p>");
+
+// 作为第一个子元素插入
+element.insertAdjacentHTML("afterbegin", "<p>Hello world!</p>");
+
+// 作为最后一个子元素插入
+element.insertAdjacentHTML("baforeend", "<p>Hello world!</p>");
+
+// 作为后一个同辈元素插入
+element.insertAdjacentHTML("afterend", "<p>Hello world!</p>");
+````
+
+* 4 内存与性能问题
+
+在使用innerHTML、outerHTML和insertAdjacentHTML()时，最好先手工删除要被替换的元素的所有事件处理程序和JavaScript对象属性。
+
+当要插入多个HTML标记时，推荐使用innerHTML，注意将使用次数控制在合理范围内。
+
+比如，先将字符串单独构建，然后一次性地将结果赋值给innerHTML。
+
+#### scrollTntoView()方法
+
+scrollTntoView()可以在所有HTML元素上调用，通过滚动浏览器窗口或某个容器元素，调用元素就可以出现的视口中。如果给这个方法传入true参数或不传任何参数，那么窗口滚动之后会让调用元素的顶部与视口顶部尽可能平齐。如果传入false作为参数，调用元素会尽可能全部出现在视口中（可能的话，底部会与视口顶部平齐），不过顶部不一定平齐。
+
+### 专有扩展
 
 
 
