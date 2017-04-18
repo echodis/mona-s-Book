@@ -96,7 +96,7 @@ if(matchesSelector(document.body, "body.page1")) {
 }
 ````
 
-### 元素遍历
+### 11.2 元素遍历
 
 对于元素间的空格，IE9及之前的版本不会返回文本节点，而其他所有浏览器都会返回文本节点。这样就导致了在使用childNodes和firstChild等属性时行为的不一致。为了弥补这一差异，同时又保持DOM规范不变，Element Traversal API为DOM元素添加了以下5个属性：
 
@@ -122,7 +122,7 @@ console.log(abc.lastChildElement); // <spna>b</span>
 console.log(abc.childElementCount); // 2
 ````
 
-### HTML5
+### 11.3 HTML5
 
 之前版本的HTML的篇幅都主要用于定义标记，与js相关的内容一概交由DOM规范定义。而HTML5规范则围绕如何使用新增标记定义了大量JavaScript API。其中一些与DOM重叠，定义了浏览器应该支持的DOM扩展。
 
@@ -333,15 +333,81 @@ element.insertAdjacentHTML("afterend", "<p>Hello world!</p>");
 
 scrollTntoView()可以在所有HTML元素上调用，通过滚动浏览器窗口或某个容器元素，调用元素就可以出现的视口中。如果给这个方法传入true参数或不传任何参数，那么窗口滚动之后会让调用元素的顶部与视口顶部尽可能平齐。如果传入false作为参数，调用元素会尽可能全部出现在视口中（可能的话，底部会与视口顶部平齐），不过顶部不一定平齐。
 
-### 专有扩展
+### 11.4 专有扩展
 
+有大量的专有扩展还未成为标准，它们只得到了少数浏览器的支持，但在将来可能被写进标准。
 
+#### 文档模式
 
+IE8引入了文档模式（document mode）这个概念。页面的文档模式决定了可以使用什么功能。到了IE9，共有4种文档模式：
 
+- [ ] IE5：以混杂模式渲染页面。在IE8及更高版本中新功能无法使用；
+- [ ] IE7：以IE7模式渲染页面。IE8及更高版本中新功能都无法使用；
+- [ ] IE8：以IE8模式渲染页面。IE8中新功能如Selectors API、CSS2级选择符和某些CSS3功能可以使用。IE9中的新功能无法使用；
+- [ ] IE9：以IE9模式渲染页面。IE9中新功能，如ECMAScript5、完整的CSS3以及更多HTML5功能。这个文档模式是最高级的模式。
 
+要强制浏览器以某种模式渲染页面，可以使用HTTP头部信息X-UA-Compatible，或通过等价的&lt;meta&gt;标签设置：
 
+````js
+<meta http-equiv="X-UA-Compatible" content="IE=IEVersion">
+````
 
+IEVersion有不同取值，并且这些值不一定与上述4中文档模式对应。取值如Edge、EmulateIE9、9等。
 
+默认情况下，浏览器会通过文档类型声明来确定是使用最佳的可用文档模式，还是使用混杂模式。
+
+通过`document.documentMode`属性可以知道给定页面使用的是什么文档模式。这个属性是IE8中新增的。
+
+#### children属性
+
+由于IE9之前的版本与其他浏览器在处理文本节点中的空白符时有差异，因此出现了children属性。这个属性是HTMLCollection的实例，只包含元素中同样还是元素的子节点。除此之外，这个属性和childNodes没有什么区别。
+
+#### contains()方法
+
+IE率先引入contains()方法，以便获知某个节点是不是另一个节点的后代。调用这个方法的是祖先节点，接受的一个参数是要检测的后代节点。如果被检测的节点是后代节点，则该方法返回true，否则返回false。
+
+````js
+// 检测body元素是不是html元素的后代
+alert(document.documentElement.contains(document.body););
+````
+
+利用DOM Level3 compareDocumentPosition()也能够确定节点间的关系。这个方法返回一个表示该关系的位掩码，不同的值代表不同的位置关系（如1：无关；2：居前；4：居后；8：包含；16：被包含）。
+
+#### 插入文本
+
+IE中innerText和outerText两个插入文本的专有属性还未被纳入规范。
+
+* 1 innerText属性
+
+可以操作元素中包含的所有文本内容，包括子文档树中的文本。在读取值时，它会按照由浅入深的顺序，将子文档树中的所有文本拼接起来；在写入值时，结果会删除元素的所有子节点，插入包含相应文本值的文本节点。
+
+设置innerText永远只会生成当前一个子文本节点（会对设置文本进行HTML编码）。
+
+像这样可以过滤掉HTML标签：
+
+````js
+div.innerText = div.innerText;
+````
+
+执行折行代码后，就用原来的所有文本内容替换了容器中的所有内容。
+
+firefox不支持innerText，但支持有类似功能的textContent属性。
+
+* 2 outerText属性
+
+和innerText相比，作用范围扩大到包含调用它的节点之外，其余基本没有什么区别。
+
+即：新的文本节点会完全取代调用outerText的元素。此后，该元素就从文档中被删除，无法访问。
+
+#### 滚动
+
+除了被HTML5纳入规范的scrollIntoView()，还有几个专用方法可以在不同浏览器中使用。下面列出的几个方法都是对HTMLElement类型的扩展，因此在所有元素中都可以调用。
+
+- [ ] scrollIntoViewIfNeeded(alignCenter)：只在当前元素在视口中不可见的情况下，蔡滚动浏览器窗口或容器元素，最终让它可见。如果参数为true，则表示尽量将元素显示在视口中部（垂直方向）。
+- [ ] scrollByLines(lineCount)：将元素的内容滚动指定行高，lineCount取值可正可负。
+- [ ] scrollByPages(pageCount)：将元素的内容滚动指定页面高度，具体高度由元素的高度决定。
+
+scrollIntoView()和scrollIntoViewIfNeeded()的作用对象是元素的容器，而scrollByLines()和scrollByPages()影响的则是元素自身。
 
 
 
