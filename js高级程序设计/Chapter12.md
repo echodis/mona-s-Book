@@ -172,10 +172,51 @@ function getElementLeft(element) {
 
 元素的客户区大小（client dimension）指的是元素内容及其内边距所占据的空间大小。有关客户区大小的属性有两个：clientWidth和clientHeight。其中，clientWidth属性是元素内容区宽度加上左右内边距宽度；clientHeight属性是元素区高度加上上下**内边距**高度。
 
+客户区就是元素内部空间的大小，因此滚动条占用的空间不计算在内。在讨论浏览器视口大小时可以使用document.documentElement或document.body的clientWidth和clientHeight。
 
+````js
+function getViewport() {
+	if(document.compatMode == "BackCompat") { // 判断浏览器是否运行在混杂模式
+		return {
+			width: document.body.clientWidth,
+			height: document.boyd.clientHeight
+		};
+	}else {
+		return {
+			width: document.documentElement.clientWidth,
+			height: document.documentElement.clientHeight
+		}
+	}
+}
+````
 
+* 3 滚动大小
 
+滚动大小（scroll dimension）指的是包含滚动内容的元素的大小。有些元素（如&lt;html&gt;元素）即使没有执行任何代码也能自动添加滚动条；但另一些元素需要CSS的overflow属性设置才能滚动。以下是4个与滚动大小相关的属性。
 
+- [ ] scrollHeight：在没有滚动条的情况下，元素内容的总高度；
+- [ ] scrollWidth：在没有滚动条的情况下，元素内容的总宽度；
+- [ ] scrollLeft：被隐藏在内容区域左侧的像素数。通过设置这个属性可以改变元素的滚动位置；
+- [ ] scrollTop：被隐藏在内容区域上方的像素数。通过设置这个属性可以改变元素的滚动位置。
+
+通常认为&lt;html&gt;元素是在wbe浏览器的视口中滚动的元素，因此带有垂直滚动条页面总高度就是`document.documentElement.srcollHeight`。
+
+对于不包含滚动条的页面，基于document.documentElement查看这些属性：如scrollWidth和clientWidth，会在不同浏览器之间发生一些不一致的情况（视口大小和文档大小）。
+
+在确定文档的总高度时（包括基于视口的最小高度时），必须取得scrollWidth/clientWidth和scrollHeight/clientHeight中的最大值，才能保证在跨浏览器的环境下得到精确的结果。
+
+````js
+var docHeight = Math.max(document.documentElement.scrollHeight,
+									document.documentElement.clientHeight);
+var docWidth = Math.max(document.documentElement.scrollWidth,
+									document.documentElement.clientWidth);
+````
+
+* 4 确定元素大小
+
+getBoundingClientRect()方法会返回一个矩形对象，包含4个属性：left、top、right和bottom。这些属性给出了元素在页面中相对于视口的位置。
+
+由于不同浏览器对起始坐标的实现不同，因此需要对返回内容进行处理。
 
 
 
