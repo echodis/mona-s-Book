@@ -216,12 +216,90 @@ var docWidth = Math.max(document.documentElement.scrollWidth,
 
 getBoundingClientRect()方法会返回一个矩形对象，包含4个属性：left、top、right和bottom。这些属性给出了元素在页面中相对于视口的位置。
 
-由于不同浏览器对起始坐标的实现不同，因此需要对返回内容进行处理。
+由于不同浏览器对起始坐标的实现不同，因此需要对返回内容进行处理。像下面这样：
+
+````js
+function getBoundingClientRect(element) {
+	if(typeof arguments.callee.offset != "number") {
+		var scrollTop = document.documentElement.scrollTop;
+		var temp = document.createElement("div");
+		temp.style.cssText = "position:absolute;left:0;top:0;";
+		document.body.appendChild(temp);
+		arguments.callee.offset = -temp.getBoundingClientRect().top - scrollTop;
+		document.body.removeChild(temp);
+		temp = null;
+	}
+	
+	var rect = element.getBoundingClientRect();
+	var offset = arguments.callee.offset;
+	
+	return {
+		left: rect.left + offset,
+		right: rect.right +offset,
+		top: rect.top + offset,
+		bottom: rect.bottom + offset
+	};
+}
+````
+
+### 遍历
+
+"DOM2级遍历和范围"模块定义了两个辅助完成顺序遍历DOM结构的类型：NodeIterator和TreeWalker。这两个类型都够基于给定的起点对DOM结构执行深度优先（depth-first）的遍历操作。
+
+检测浏览器对DOM2级遍历能力的支持情况：
+
+````js
+var supportsTraversals = document.implementation.hasFeature("Traversal", "2.0");
+var supportNodeIterator = (typeof document.createNodeIterator == "function");
+var supportTreeWalker = (typeof document.createTreeWalker == "function");
+````
+
+DOM遍历是深度优先的DOM结构遍历，意味着移动的方向至少有两个（取决与使用的遍历类型）。遍历以给定节点为根，不可能向上超出DOM树的根节点。
+
+#### NodeIterator
+
+可以使用document.createNodeIterator()方法创建它的新实例，这个方法接受4个参数。
+
+- [ ] root：想要作为搜索起点的树中的节点。
+- [ ] whatToShow：表示要访问哪些节点的数字代码。
+- [ ] filter：是一个NodeFilter对象，或者一个表示应该接受还是拒绝某种特定节点的函数。
+- [ ] entityReferenceExpansion：布尔值，表示是否要扩展实体引用。在HTML中无。
+
+whatToShow参数是一个位掩码，通过应用一或多个过滤器来确定要访问哪些节点。其值常以常量形式在NodeFilter类型中定义，部分举例如下：
+
+- [ ] NodeFilter.SHOW_ALL：显示所有类型的节点。
+- [ ] NodeFilter.SHOW_TEXT：显示文本节点。
+- [ ] ...
+
+通过按位或操作符来组合多个选项，如下所示：
+
+````js
+var whatToShow = NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT;
+````
+
+NodeIterator类型的两个主要方法是nextNode()和previousNode()。在指向根节点或子树的最后一个节点时，调用previousNode()和nextNode()分别会返回null。
+
+#### TreeWalker
+
+TreeWalker是NodeIterator的一个更高级版本。除了包括nextNode()和previousNode()在内的相同的功能之外，还提供了在不同方向上遍历DOM结构的方法。如：
+
+- [ ] parentNode()：遍历到当前节点的父节点；
+- [ ] firstChild()：遍历到当前节点的第一个子节点；
+- [ ] lastChild()：遍历到当前节点的最后一个子节点；
+- [ ] nextSibling()：遍历到当前节点的下一个同辈节点；
+- [ ] previousSibling()：遍历到当前节点的上一个同辈节点。
+
+document.createTreeWalker()方法接受4个参数与document.createNodeIterator()方法相同：作为遍历的起点、要显示的节点类型、过滤器和一个表示是否扩展实体引用的布尔值。
 
 
 
 
 
+### 范围
+
+为了让开发人员更方便地控制页面，"DOM2级遍历和范围"模块定义了"范围"接口。通过范围可以选择文档中的一个区域，而不必考虑节点的界限。
+
+#### DOM中的范围
 
 
 
