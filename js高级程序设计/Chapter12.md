@@ -301,9 +301,82 @@ document.createTreeWalker()方法接受4个参数与document.createNodeIterator(
 
 #### DOM中的范围
 
+DOM2级在Document类型中定义了createRange()方法。在兼容DOM的浏览器中，属于document对象。同样可以使用hasFeature()或者直接检测该方法，都可以确定浏览器是否支持范围。
 
+var supportsRange = document.implementation.hasFeature("Range", "2.0");
+var alsoSupportsRange = (typeof document.createRange == "function");
 
+如果浏览器支持范围，就可以使用createRange()来创建DOM范围：
+
+````js
+var range = document.createRange();
+````
+
+每个范围由一个Range类型的实例表示，这个实例有用很多属性和方法，如起点节点，范围在起点节点中的偏移量，终点节点等。当把范围放到文档特定位置时，这些属性会被赋值。
+
+* 1 用DOM范围实现简单选择
+
+selectNode()和selectNodeContents()方法都接受一个参数，即一个DOM节点，然后使用该节点中的信息来填充范围。selectNode()选择整个节点，包括其子节点；selectNodeContents()则只选择节点的子节点。
+
+还有一些更精细地控制将哪些节点包含在范围中的方法。
+
+* 2 用DOM范围实现复杂选择
+
+创建复杂范围需要使用setStart()和setEnd()方法。这两个方法都接受两个参数：一个参照节点和一个偏移量，分别对应其startContainer/endContainer和startOffset/endOffset。
+
+* 3 操作DOM范围中的内容
+
+deletContents()能从文档中删除范围所包含的内容。extractContents()也会移除范围选区，但是会返回范围的文档片段（可以利用返回值将范围内容插入到文档其他地方）。
+
+范围被删除后，最终DOM格式依旧是格式良好的。
+
+cloneContents()创建范围对象的一个副本，然后在文档其他地方插入该副本。
+
+* 4 插入DOM范围中的内容
+
+利用insertNode()方法可以向范围选区的开始处插入一个节点。
+
+surroundContents()方法接受一个参数，即环绕范围内容的节点（可以用于突出显示网页中的某些词句）。
+
+* 5 折叠DOM范围
+
+折叠范围，是指范围中未选择文档的任何部分。使用collapse()方法来折叠范围，这个方法接受一个参数，一个布尔值，表示要折叠到范围的哪一端。true表示起点，false表示终点。使用collapsed属性可以检查范围是否折叠完。
+
+检测某个范围是否处于折叠状态，可以帮我们确定范围中两个节点是否紧密相邻。
+
+* 6 比较DOM范围
+
+在有多个范围的情况下，可以使用compareBoundaryPoints()方法来确定这些范围是否有公共的边界（起点或终点）。接受两个参数：表示比较方式的常量值和要比较的范围。可能返回的值有-1、0、1。
+
+* 7 复制DOM范围
+
+使用cloneRange()方法复制范围，新创建的范围与原来的范围包含相同的属性，修改它的端点不会影响原来的范围。
+
+* 8 清理DOM范围
+
+使用完范围后，最好调用detah()方法，以便从创建范围的文档中分离出该范围。
+
+````js
+range.detach();
+range = null;
+````
+
+#### IE8及更早版本中的范围
+
+IE8及之前版本不支持DOM范围，但是支持一种类似的叫做：文本范围（text range）的概念
 	
+findText()会找到第一次出现的给定文本，并将范围移过来环绕文本，找到则返回true，否则返回false。
+
+IE中还支持以特定的增量向四周移动范围。
+
+text属性或pasteHTML()方法可以操作范围中的内容。
+
+折叠方法collapse()与相应DOM方法用法一样，但是没有对应的collapsed属性让我们知道范围是否已经折叠完毕。
+
+compareEndPoints()比较DOM范围。
+
+duplicate()方法可以复制文本范围，新创建范围会带有与原范围完全相同的属性。
+
 
 
 
