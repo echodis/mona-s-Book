@@ -26,16 +26,85 @@ Netscape Communicator团队剔除事件捕获流（event capturing）。事件�
 
 由于老版本浏览器不支持，因此很少有人使用事件捕获，建议使用事件冒泡。
 
-#### DOM事件流
+#### 13.1.3 DOM事件流
 
 "DOM2级事件"规定的事件流包括3个阶段：事件捕获阶段、处于目标阶段和事件冒泡阶段。捕获阶段为截获事件提供了机会，然后实际的目标接收到事件，最后一个阶段是冒泡阶段，可以在这个阶段对事件做出响应。
 
+尽管"DOM2级事件"规范明确要求捕获阶段不会涉及事件目标，但IE9、Safari、Chrome、Firefox和Opera9.5及更高版本都会在捕获阶段触发事件对象上的事件。结果就是有两个机会在目标对象上面操作事件。
 
+### 事件处理程序
 
+事件是用户或浏览器自身执行的某种动作，响应某个事件的函数就叫做**事件处理程序**（或**事件侦听器**）。事件处理程序的名字以"on"开头。为事件指定处理程序的方式有好几种。
 
+#### 13.2.1 HTML事件处理程序
 
+某个元素支持的每种事件，都可以使用一个与相应事件处理程序同名的HTML特性来指定。这个特性的值应该是能够执行的JavaScript代码。像这样：
 
+````js
+<input type="button" value="Click Me" onclick="alert('Clicked')" />
+````
 
+也可以调用在页面其他地方定义的脚本：
+
+````js
+<script type="text/javascript">
+	function showMessage() {
+		alert("Hello world!");
+	}
+</script>
+<input type="button" value="Click Me" onclick="showMessage()" />
+````
+
+事件处理程序中的代码在执行时，有权访问全局作用域中的任何代码。这样指定事件处理程序会创建一个封装着元素属性值的函数。这个函数中有一个局部变量event，也就是事件对象。
+
+通过**event变量可以直接访问事件对象**。在这个函数内部，**this值等于事件的目标元素**。
+
+有意思的一点是，这个动态创建的函数的扩展作用域：在这个函数内部，可以像访问局部变量一样访问document及该元素本身的成员。这个函数使用with扩展作用域：
+
+````js
+function() {
+	with(document) {
+		with(this){
+			// 元素属性值
+		}
+	}
+}
+````
+
+那么，事件处理程序访问该元素的属性可以直接访问：
+
+````js
+<input type="button" value="Click Me" onclick="alert(value)" />
+````
+
+如果当前元素是一个表单输入元素，则作用域中还会包含访问表单元素（父元素）的入口，扩展作用域函数如下：
+
+````js
+function() {
+	with(document) {
+		with(this.form) {
+			with(this) {
+				// 元素属性值
+			}
+		}
+	}
+}
+````
+
+这样扩展作用域，以表单为例，就是想让事件处理程序无需引用表单元素就能访问其他表单字段。例如：
+
+````js
+<form method="post">
+	<input type="text" name="username" value="" />
+	<input type="button" value="Echo Username" onclick="alert(username.value)" />
+</form>
+````
+
+在HTML中指定事件处理程序有两个缺点：一是文件或代码加载时差的问题；二是这样扩展事件处理程序的作用域链在不同浏览器中会导致不同结果，不同JavaScript引擎遵循的标识符解析规则略有差异，很可能会在访问非限定对象成员时出错。
+
+#### 13.2.2 DOM0级事件处理程序
+
+通过JavaScript
 
 
 
