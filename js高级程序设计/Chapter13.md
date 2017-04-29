@@ -104,17 +104,105 @@ function() {
 
 #### 13.2.2 DOM0级事件处理程序
 
-通过JavaScript
+通过JavaScript指定事件处理程序的传统方式，就是将一个函数赋值给一个事件处理程序属性。这种事件处理程序赋值的方法是在第四代Web浏览器中出现的，而今仍然为所有现代浏览器所支持。原因一是简单，二是具有跨浏览器的优势。要使用JavaScript指定事件处理程序，首先必须取得一个要操作的对象的引用。
+
+需要注意的是，在处理程序运行前不会指定事件处理程序，会存在文件加载时差问题。
+
+DOM0级方法指定的事件处理程序被认为是元素的方法，因此事件处理程序是在元素作用域中运行的，即程序中的this引用当前元素。
+
+````js
+var btn = document.getElementById("myBtn");
+btn.onclick = function() {
+	alert(this.id); // "myBtn"
+};
+````
+
+也可以删除通过DOM0级方法指定的事件处理程序：
+
+````js
+btn.onclick = null; // 删除事件处理程序
+````
+
+#### 13.2.3 DOM2级事件处理程序
+
+"DOM2级事件"定义了两个方法，用于处理指定和删除事件处理程序的操作：addEventListener()和removeEventListener()。
+
+所有DOM节点都包含这两个方法，并且都接受3个参数：要处理的事件名、作为事件处理程序的函数和一个布尔值。最后布尔值的参数如果是true，表示在捕获阶段调用事件处理程序；如果是false，表示在冒泡阶段调用事件处理程序。
+
+使用DOM2级事件处理程序的主要好处是可以添加多个事件处理程序：
+
+````js
+var btn = document.getElementById("myBtn");
+btn.addEventListener("click", function() {
+	alert(this.id);
+}, false);
+btn.addEventListener("click", function() {
+	alert("Hello world!");
+}, false);
+````
+
+通过removeEventListener()移除事件，移除时传入的参数与添加处理程序时使用的参数相同。这也意味着通过addEventListener()添加的匿名函数将无法移除。
+
+下面是可以添加和移除的例子：
+
+````js
+var btn = document.gtElementById("myBtn");
+var handler = function() {
+	alert(this.id);
+};
+btn.addEventListener("click", handler, false);
+btn.removeEventListener("click", handler, false); // 有效
+````
+
+大多数情况下，都是将事件处理程序添加到事件流的冒泡阶段，这样可以最大限度地兼容各种浏览器。最好是在需要事件到达目标之前截获它的时候将事件处理程序添加到捕获阶段。
 
 
+#### IE事件处理程序
 
+IE实现了与DOM中类似的两个方法：attachEvent()和detachEvent()。这两个方法接受相同的两个参数：事件处理程序名称与事件处理程序函数。由于IE8及更早版本只支持事件冒泡，所以通过attachEvent()添加的事件处理程序都会被添加到冒泡阶段。
 
+````js
+var btn = document.getElementById("myBtn");
+btn.attachEvent("onclick", function() {
+	alert("Clicked");
+});
+````
 
+在IE中使用attachEvent()与使用DOM0级方法的主要区别在于**事件处理程序的作用域**。在使用DOM0级方法的情况下，事件处理程序会在其所属元素的作用域内运行；在使用attachEvent()方法的情况下，事件处理程序会在全局作用域中运行，此时this等于window。
 
+使用attachEvent()添加多个事件处理程序时，这些事件处理程序是以添加的相反顺序被触发的。
 
+使用detachEvent()可以移除attachEvent()添加的事件处理程序，条件是必须提供相同的参数。
 
+#### 13.2.5 跨浏览器的事件处理程序
 
+跨浏览器处理事件只需恰当地使用能力检测即可。先检测是否存在DOM2级方法，然后检测是否存在IE的方法，最后就是使用DOM0级方法。
 
+var EventUtil = {
+	addHandler: function(element, type, handler) {
+		if(element.addEventListener) {
+			element.addEventListener(type, handler, false);
+		}else if(element.attachEvent) {
+			element.attachEvent("on" + type, handler);
+		}else {
+			element["on" + type] = handler;
+		}
+	},
+	removeHandler: function(element, type, handler) {
+		if(element.removeEventListener) {
+			element.removeEventListener(type, handler, false);
+		}else if(element.detachEvent) {
+			element.detachEvent("on" + type, handler);
+		}else {
+			element["on" + type] = null;
+		}
+	}};
+
+### 事件对象
+
+在触发DOM上的某个事件时，会产生一个事件对象event，这个对象中包含着所有与事件有关的信息。包括导致事件的元素、事件的类型以及其他与特定事件相关的信息。
+
+#### 13.3.1 DOM中的事件对象
 
 
 
