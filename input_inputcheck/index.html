@@ -1,0 +1,56 @@
+<!doctyle html>
+<html>
+    <head>
+        <title>
+            Demo for input check
+        </title>
+    </head>
+    <body>
+        <p>1. 事件顺序</p>
+        <input id="field" type="text" />
+        <p>2. 输入校验</p>
+        <input type="text" onInput="checkInput(event)"  />
+    </body>
+    <script>
+        function g(type, selector) {
+            if (type == "id") return document.getElementById(selector);
+            if (type == "class") return document.getElementsByClassName(selector);
+            if (type == "tag") return document.getElementsByTagName(selector);
+            if (type == "tag") return document.getElementsByTagName(selector);
+        }
+        g("id", "field").onkeyup = function() {
+            console.log("onkeyup");
+        }
+        g("id", "field").onkeypress = function() {
+            console.log("onkeypress");
+        }
+        g("id", "field").onkeydown = function() {
+            console.log("onkeydown");
+        }
+        g("id", "field").onfocus = function() {
+            console.log("onfocus");
+        }
+        g("id", "field").onchange = function() {
+            console.log("onChange");
+        }
+        g("id", "field").oninput = function() {
+            console.log("onInput");
+        }
+        g("id", "field").onblur = function() {
+            console.log("onblur");
+        }
+
+        setTimeout(function() { //通过脚本改变　　　　　
+            g("id", "field").value = "lla";　　　
+        }, 2000);
+
+        // input check
+        function checkInput(evt) { // checkInput
+            console.log('123', evt.target.value);
+            let value = evt.target.value;
+            if (!/^\d+$/.test(value)) {
+                evt.target.value = "";
+            }
+        }
+    </script>
+</html>
