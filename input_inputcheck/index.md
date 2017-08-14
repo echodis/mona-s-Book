@@ -4,13 +4,13 @@
 
 - [ ] input事件总结
 - [ ] 输入即提示的input check
-- [ ] 中/英文输入的input check
+- [ ] 综合多种类型的input check
 
 ### input事件总结
 
-input事件有`onkeyup`、`onkeydown`、`onkeypress`、`onchange`、`oninput`等，比较详细的参考文档是[input输入框的事件触发及其顺序](http://www.cnblogs.com/llauser/p/6715409.html)，jsfiddle中对[源代码](https://jsfiddle.net/monaz_/m7cm7n6k/)进行了展示。
+input事件有`onkeyup`、`onkeydown`、`onkeypress`、`onchange`、`oninput`等，网上找了个比较具体的参考文档是[input输入框的事件触发及其顺序](http://www.cnblogs.com/llauser/p/6715409.html)，源代码在`./index.html`有介绍。
 
-通过以上demo中源码的实践，可以总结出一下观点：
+首先，综述一下input各事件触发顺序（chrome中）：
 
 1. 仅鼠标点击（无键盘事件）
 
@@ -81,6 +81,15 @@ input事件有`onkeyup`、`onkeydown`、`onkeypress`、`onchange`、`oninput`等
 移动端的处理方法一般是提供软键盘模拟用户输入操作，这里不做讨论。
 
 综合以上对全部input情况的总结，可以在`onInput`阶段对输入进行校验。
+
+代码见`./index.html`中的第二个input示例。
+
+
+### 综合多种类型的输入check
+
+针对面向用户的产品端，这个需求有点*伪需求*的意味，因为面向用户的输入形式是有限且固定的。但是面向企业，尤其是企业内部运营活动，经常涉及到诸如：多个数值字符串，以逗号分隔的需求。这类需求一般是用以方便运营人员进行批量操作。
+
+代码见`./index.html`中的第三个input示例。
 
 
 

@@ -4,12 +4,15 @@
         <title>
             Demo for input check
         </title>
+        <script src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
     </head>
     <body>
         <p>1. 事件顺序</p>
         <input id="field" type="text" />
         <p>2. 输入校验</p>
         <input type="text" onInput="checkInput(event)"  />
+        <p>3. 多类型输入校验</p>
+        <input class="multi-input" type="text" onInput="multiCheck(event)"  />
     </body>
     <script>
         function g(type, selector) {
@@ -46,11 +49,27 @@
 
         // input check
         function checkInput(evt) { // checkInput
-            console.log('123', evt.target.value);
+            // console.log('123', evt.target.value);
             let value = evt.target.value;
             if (!/^\d+$/.test(value)) {
                 evt.target.value = "";
             }
         }
+
+        // multiCheck
+        function multiCheck(evt) {
+            debounceCheck(evt);
+        }
+        var debounceCheck = _.debounce(function(evt) {
+            let value = evt.target.value;
+            let reg = /^(\d+(\,|\，))*\d+$/ig;
+            if (!reg.test(value)) {
+                evt.target.value = "";
+                // 可以通过样式的区分进行更清晰的提示
+                document.querySelector('.multi-input').style.border = '1px inset red';
+            }else {
+                document.querySelector('.multi-input').style.border = '1px solid #dfdfdf';
+            }
+        }, 600);
     </script>
 </html>
