@@ -43,29 +43,28 @@
                 let t = [];
                 let len = input.length;
                 for (let key = 0; key < i; key++) {
-                    // 保存首位元素
-                    t.push(input[key]);
+                    // 保存首位元素，unsift可以避免后面reverse t
+                    t.unshift(input[key]);
 
-                    for (let index = 0; (key + index * i) < input.length; index++) {
+                    for (let index = 0; (key + index * i) < len; index++) {
                         if (input[key + (index + 1) * i]) {
                             input[key + index * i] = input[ key + (index + 1) * i];
                         }
                     }
-                    
-                    console.log('rotate-input', input);
+                    // console.log('rotate-input', input);
                 }
                 // rotate后，将保存的首位元素逐个赋值给input
-                t.reverse().forEach((item, index) => {
+                t.forEach((item, index) => {
                     input[len - index - 1] = item;
                 });
 
 
-                console.log('input', input);
+                // 更新到output中进行展示
+                // console.log('input', input);
                 let outputValue = '这是输出：';
                 input.forEach(item => {
                     outputValue += item;
                 });
-
                 document.getElementById('outputValue').innerHTML = outputValue;
             }
 
@@ -74,8 +73,6 @@
                 let inputValue = document.getElementById('inputValue').value || '';
                 // i是移动位置的标识
                 let i = document.getElementById('i').value || 2;
-                console.log('inputValue', inputValue);
-                console.log('i', i);
                 rotateData(inputValue, i);
             }
 
