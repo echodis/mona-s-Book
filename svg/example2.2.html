@@ -1,0 +1,35 @@
+<!DOCTYPE hmlt>
+    <html>
+    <head>
+        <title>SVG in HTML</title>
+        <style>
+            svg {
+                display: block;
+                width: 500px;
+                height: 500px;
+                margin: auto;
+                border: thick double navy;
+                background-color: lightblue;
+            }
+
+            body {
+                font-family: cursive; // 定义给主文档的样式会被继承
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Inline SVG in HTML Demo Page.</h1>
+        <svg viewBox="0 0 250 250"
+            xmlns="http://www.w3.org/2000/svg">
+            <title>An AVG circle</title>
+            <circle class="circle-big" cx="125" cy="125" r="100" fill="lavender" />
+            <circle id="circle-small" cx="100" cy="50" r="40" stroke="navy"
+stroke-width="2" fill="red"/>
+            <text x="125" y="125" dy="0.5em" text-anchor="middle">
+                Look Ma, Same Font!
+            </text>
+        </svg>
+        <p>And here is regular HTML again...</p>
+    </body>
+
+    </html>

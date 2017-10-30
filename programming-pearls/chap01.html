@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <title></title> 
+    </head>
+    <body>
+        <div>
+            <h4>题目：</h4>
+            <p>仅使用几十个字节的额外空间将一个n元向量x在正比于n的时间内向左旋转i个位置。</p>
+            <p>
+                题目的关键在于存储空间的处理，每次旋转都相当于交换响铃的不同大小的内存块：每当拖动文件中的一块文字到其他地方时，就要求程序交换两块内存中的内容。
+            </p>
+            <p>
+                容易想到的一种方法是：首先把x的前i个元素复制到临时数组中，然后将余下的n－i个元素向左移动i个位置，最后将最初的i个元素复制到x中的剩余位置。这样操作的
+                问题是最初存储i个额外位置消耗了过多存储空间。还有其他用消耗时间来减少存储空间的办法等等。
+            </p>
+            <p>
+                有一个比较精巧的动作是这样的：移动x[0]到临时变量t，然后移动x[i]到x[0]，移动x[2i]到x[i]，以此类推直至（将x中的所有下标对n取模）。直至返回到取x[0]中的元素，此时改为从t取值然后
+                终止过程。如果这个时候没有移动全部元素，就从x[1]开始再次移动，直至所有元素都已经移动为止。
+            </p>
+        </div>
+        <div>
+            <p>为了便于操作，这里限制输入为0-9的整数</p>
+            <input id="inputValue" placeholder="请输入n元向量字符串" value="" />
+            <input id="i" placeholder="请输入位置i" />
+            <button onclick="calcutate()">计算结果</button>
+            <div id="outputValue">
+                <P>输出</P>
+            </div>
+        </div>
+        
+
+        <script>
+
+            // rotate data
+            function rotateData(input, i) {
+                
+                if (!input.length) {
+                    return ;
+                }
+                else {
+                    input = input.split('');
+                }
+                let t = [];
+                let len = input.length;
+                for (let key = 0; key < i; key++) {
+                    // 保存首位元素
+                    t.push(input[key]);
+
+                    for (let index = 0; (key + index * i) < input.length; index++) {
+                        if (input[key + (index + 1) * i]) {
+                            input[key + index * i] = input[ key + (index + 1) * i];
+                        }
+                    }
+                    
+                    console.log('rotate-input', input);
+                }
+                // rotate后，将保存的首位元素逐个赋值给input
+                t.reverse().forEach((item, index) => {
+                    input[len - index - 1] = item;
+                });
+
+
+                console.log('input', input);
+                let outputValue = '这是输出：';
+                input.forEach(item => {
+                    outputValue += item;
+                });
+
+                document.getElementById('outputValue').innerHTML = outputValue;
+            }
+
+            function calcutate() {
+                //  输入
+                let inputValue = document.getElementById('inputValue').value || '';
+                // i是移动位置的标识
+                let i = document.getElementById('i').value || 2;
+                console.log('inputValue', inputValue);
+                console.log('i', i);
+                rotateData(inputValue, i);
+            }
+
+        </script>
+    </body>
+</html>
